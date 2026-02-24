@@ -1,0 +1,39 @@
+@use "../base/base" as base;
+
+.auctions_container {
+  padding: 1.625rem 5.0625rem 5.25rem 1.4375rem;
+  background: base.$dark-bg;
+}
+
+.auctions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.625rem;
+
+  &_item {
+    @include base.card;
+    display: flex;
+    flex-direction: column;
+    gap: .9375rem;
+    padding: 1.0625rem 1.6875rem;
+  }
+}
+
+.list-item {
+  &_name {
+    color: base.$primary;
+    @include base.title-md;
+  }
+
+  &_price {
+    color: base.$primary;
+    font-weight: 600;
+  }
+}
+
+.list-button {
+  background: base.$primary;
+  color: base.$white;
+  padding: .4375rem 1.125rem;
+  border-radius: .625rem;
+}

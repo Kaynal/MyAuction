@@ -1,0 +1,20 @@
+@use "../base/base" as base;
+
+.login-page_container {
+  @include base.page-dark;
+  @include base.flex-center;
+}
+
+.login-page_block {
+  @include base.card;
+  padding: 2.8125rem 4.6875rem;
+  display: flex;
+  flex-direction: column;
+  gap: .9375rem;
+}
+
+.login-page_title {
+  color: base.$primary;
+  @include base.title-lg;
+  text-align: center;
+}

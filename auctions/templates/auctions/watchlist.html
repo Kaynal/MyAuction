@@ -1,0 +1,27 @@
+{% extends "auctions/layout.html" %}
+
+{% block content %}
+<div class="watchlist-page_container">
+
+    <h2 class="watchlist-title">Список відстеження</h2>
+
+    {% if auctions %}
+        <ul class="auctions-list">
+            {% for auction in auctions %}
+            <li class="auctions-list_item">
+                <div class="list-item_name">{{auction.name}}</div>
+                <div class="list-item_id">ID: {{auction.id}}</div>
+                <div class="list-item_description">{{auction.description}}</div>
+                <div class="list-item_price">Поточна ставка: {{ auction.current_price }}</div>
+                <div class="auction-list_button">
+                    <a href="{% url 'auction' auction.id %}"><button class="list-button">Переглянути лот</button></a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="watchlist-empty">Ваш список відстеження порожній!</p>
+    {% endif %}
+
+</div>
+{% endblock %}

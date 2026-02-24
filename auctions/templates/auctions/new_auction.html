@@ -1,0 +1,31 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}Створити новий аукціон{% endblock %}
+
+{% block content %}
+    <div class="new-auction_container">
+        <div class="new-auction_block">
+            <h2 class="new-auction_title">Новий аукціон</h2>
+
+            <form method="post" enctype="multipart/form-data" class="new-auction_form">
+                {% csrf_token %}
+
+                <label class="new-auction_label">Назва:</label>
+                <input type="text" name="title" class="new-auction_input" required>
+
+                <label class="new-auction_label">Опис:</label>
+                <textarea name="content" rows="8" class="new-auction_textarea" required></textarea>
+
+                <label class="new-auction_label">Початкова ставка:</label>
+                <input type="number" name="start_price" step="0.01" min="0" class="new-auction_input" required>
+
+                <label class="new-auction_label">Зображення:</label>
+                <input type="file" name="image" class="new-auction_file">
+
+                <button type="submit" class="page_form-button button-save">
+                    Зберегти
+                </button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

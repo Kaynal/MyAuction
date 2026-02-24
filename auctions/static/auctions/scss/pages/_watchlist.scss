@@ -1,0 +1,14 @@
+@use "../base/base" as base;
+
+.watchlist-page_container {
+  padding: 1.625rem 5.0625rem 5.25rem 1.4375rem;
+  background: base.$dark-bg;
+}
+
+.watchlist-title,
+.watchlist-empty {
+  color: base.$white;
+  font-size: 1.75rem;
+  font-weight: 700;
+  padding-bottom: .9375rem;
+}

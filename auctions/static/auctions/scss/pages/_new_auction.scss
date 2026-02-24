@@ -1,0 +1,19 @@
+@use "../base/base" as base;
+
+.new-auction_container {
+  @include base.page-dark;
+  padding: 7.25rem 5.875rem;
+}
+
+.new-auction_block {
+  @include base.card;
+  padding: 1.8125rem 0 3.5rem 2.0625rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.0625rem;
+}
+
+.new-auction_title {
+  color: base.$primary;
+  @include base.title-md;
+}

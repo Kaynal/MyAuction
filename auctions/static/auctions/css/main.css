@@ -1,0 +1,310 @@
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-size: 16px;
+  line-height: 1;
+}
+
+button, textarea, input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+button:focus, button:active {
+  outline: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+img {
+  vertical-align: top;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font: inherit;
+}
+
+.header {
+  background: rgb(70, 25, 25);
+  box-shadow: 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 5px 5px -3px rgba(0, 0, 0, 0.2);
+}
+.header_container {
+  display: flex;
+  justify-content: space-around;
+}
+.header h1 {
+  color: #fff;
+  font-size: 1.625rem;
+  font-weight: 600;
+  line-height: 1.875rem;
+  display: flex;
+  align-items: center;
+}
+.header_nav, .header_profile {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  font-size: 1.0625rem;
+  font-weight: 500;
+}
+.header_nav {
+  gap: 26px;
+  padding: 1.875rem 0;
+}
+
+.main_container {
+  position: relative;
+  max-height: 100vh;
+  color: #fff;
+  background: url("../images/background.jpg") top/cover no-repeat;
+}
+
+.main-block {
+  padding: 9.5rem 0 12.6875rem 2.8125rem;
+}
+.main-block_content {
+  padding: 0.625rem 1.1875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: rgba(70, 25, 25, 0.6);
+  border-radius: 14px;
+  max-width: 37.625rem;
+}
+.main-block_button {
+  padding-top: 1.0625rem;
+}
+
+.block-content_title {
+  font-size: 2.875rem;
+  font-weight: 600;
+  line-height: 3.75rem;
+}
+.block-content_text {
+  font-size: 1.5rem;
+  line-height: 2.375rem;
+}
+
+.button_main-block {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.0625rem;
+  padding: 0.625rem 1.125rem;
+  border-radius: 29px;
+  background: rgb(214, 72, 44);
+  transition: 0.3s;
+}
+.button_main-block:hover {
+  background: rgba(214, 72, 44, 0.77);
+}
+
+.auctions_container {
+  padding: 1.625rem 5.0625rem 5.25rem 1.4375rem;
+  background: rgb(36, 10, 22);
+}
+
+.auctions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.625rem;
+}
+.auctions-list_item {
+  border-radius: 1.25rem;
+  background: rgb(235, 237, 239);
+  color: #000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9375rem;
+  padding: 1.0625rem 1.6875rem;
+}
+
+.list-item_name {
+  color: rgb(70, 25, 25);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.8125rem;
+}
+.list-item_price {
+  color: rgb(70, 25, 25);
+  font-weight: 600;
+}
+
+.list-button {
+  background: rgb(70, 25, 25);
+  color: #fff;
+  padding: 0.4375rem 1.125rem;
+  border-radius: 0.625rem;
+}
+
+.index-page .main_container {
+  position: relative;
+  max-height: 100vh;
+  color: #fff;
+  background: url("images/background.jpg") top/cover no-repeat;
+}
+.index-page .main-background_img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+.index-page .main-background_img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.index-page .main-block {
+  padding: 9.5rem 0 12.6875rem 2.8125rem;
+}
+.index-page .main-block_content {
+  padding: 0.625rem 1.1875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: rgba(70, 25, 25, 0.6);
+  border-radius: 14px;
+  max-width: 37.625rem;
+}
+.index-page .main-block_button {
+  padding-top: 1.0625rem;
+}
+.index-page .block-content_title {
+  font-size: 2.875rem;
+  font-weight: 600;
+  line-height: 3.75rem;
+}
+.index-page .block-content_text {
+  font-size: 1.5rem;
+  line-height: 2.375rem;
+}
+.index-page .button_main-block {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.0625rem;
+  padding: 0.625rem 1.125rem;
+  border-radius: 29px;
+  background: rgb(214, 72, 44);
+  transition: 0.3s;
+}
+.index-page .button_main-block:hover {
+  background: rgba(214, 72, 44, 0.77);
+}
+
+.login-page_container {
+  background: rgba(36, 10, 22, 0.95);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-page_block {
+  border-radius: 1.25rem;
+  background: rgb(235, 237, 239);
+  color: #000;
+  padding: 2.8125rem 4.6875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9375rem;
+}
+
+.login-page_title {
+  color: rgb(70, 25, 25);
+  font-size: 2.625rem;
+  font-weight: 700;
+  line-height: 3.1875rem;
+  text-align: center;
+}
+
+.new-auction_container {
+  background: rgba(36, 10, 22, 0.95);
+  min-height: 100vh;
+  padding: 7.25rem 5.875rem;
+}
+
+.new-auction_block {
+  border-radius: 1.25rem;
+  background: rgb(235, 237, 239);
+  color: #000;
+  padding: 1.8125rem 0 3.5rem 2.0625rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.0625rem;
+}
+
+.new-auction_title {
+  color: rgb(70, 25, 25);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.8125rem;
+}
+
+.register-page_container {
+  background: rgba(36, 10, 22, 0.95);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.register-page_block {
+  border-radius: 1.25rem;
+  background: rgb(235, 237, 239);
+  color: #000;
+  padding: 2.8125rem 4.6875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9375rem;
+}
+
+.register-page_title {
+  color: rgb(70, 25, 25);
+  font-size: 2.625rem;
+  font-weight: 700;
+  line-height: 3.1875rem;
+  text-align: center;
+}
+
+.btn {
+  width: 128px;
+  border-radius: 15px;
+  background: rgb(70, 25, 25);
+  color: #fff;
+  padding: 7px;
+  margin: auto;
+}
+
+.watchlist-page_container {
+  padding: 1.625rem 5.0625rem 5.25rem 1.4375rem;
+  background: rgb(36, 10, 22);
+}
+
+.watchlist-title,
+.watchlist-empty {
+  color: #fff;
+  font-size: 1.75rem;
+  font-weight: 700;
+  padding-bottom: 0.9375rem;
+}
+
+/*# sourceMappingURL=main.css.map */

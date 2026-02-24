@@ -1,0 +1,37 @@
+{% extends "auctions/layout.html" %}
+
+{% block content %}
+    <div class="index-page">
+        <div class="main_container">
+            <div class="main-block">
+                <div class="main-block_content">
+                    <h2 class="block-content_title">
+                        Accelerate, Elevate, and Innovate!
+                    </h2>
+                    <p class="block-content_text">
+                        Bid on Dream Cars, Exotic Animals, and Cutting-Edge Electronics!
+                    </p>
+                </div>
+                <div class="main-block_button">
+                    <button class="button_main-block">Check Auctions</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="auctions_container">
+            <ul class="auctions-list">
+                {% for auction in auctions %}
+                <li class="auctions-list_item">
+                    <div class="list-item_name">{{auction.name}}</div>
+                    <div class="list-item_id">ID: {{auction.id}}</div>
+                    <div class="list-item_description">{{auction.description}}</div>
+                    <div class="list-item_price">Стартова ціна: {{auction.start_price}}</div>
+                    <div class="auction-list_button">
+                        <a href="{% url 'auction' auction.id %}"><button class="list-button">Переглянути лот</button></a>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}

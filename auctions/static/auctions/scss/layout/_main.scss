@@ -1,0 +1,52 @@
+@use "../base/base" as base;
+
+.main_container {
+  position: relative;
+  max-height: 100vh;
+  color: base.$white;
+  background: url("../images/background.jpg") top / cover no-repeat;
+}
+
+.main-block {
+  padding: 9.5rem 0 12.6875rem 2.8125rem;
+
+  &_content {
+    padding: .625rem 1.1875rem;
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+    background: base.$primary-light;
+    border-radius: 14px;
+    max-width: 37.625rem;
+  }
+
+  &_button {
+    padding-top: 1.0625rem;
+  }
+}
+
+.block-content {
+  &_title {
+    font-size: 2.875rem;
+    font-weight: 600;
+    line-height: 3.75rem;
+  }
+
+  &_text {
+    font-size: 1.5rem;
+    line-height: 2.375rem;
+  }
+}
+
+.button_main-block {
+  @include base.flex-center;
+  font-size: 1.0625rem;
+  padding: .625rem 1.125rem;
+  border-radius: 29px;
+  background: base.$accent;
+  transition: .3s;
+
+  &:hover {
+    background: rgba(base.$accent, 0.77);
+  }
+}

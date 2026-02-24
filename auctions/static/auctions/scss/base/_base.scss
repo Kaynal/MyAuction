@@ -1,0 +1,39 @@
+// ===== Variables =====
+$primary: rgba(70, 25, 25, 1);
+$primary-light: rgba(70, 25, 25, 0.6);
+$accent: rgba(214, 72, 44, 1);
+$dark-bg: rgba(36, 10, 22, 1);
+$dark-bg-light: rgba(36, 10, 22, 0.95);
+$white: #fff;
+$black: #000;
+$card-bg: rgba(235, 237, 239, 1);
+
+// ===== Mixins =====
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin page-dark {
+  background: $dark-bg-light;
+  min-height: 100vh;
+}
+
+@mixin card {
+  border-radius: 1.25rem;
+  background: $card-bg;
+  color: $black;
+}
+
+@mixin title-lg {
+  font-size: 2.625rem;
+  font-weight: 700;
+  line-height: 3.1875rem;
+}
+
+@mixin title-md {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.8125rem;
+}

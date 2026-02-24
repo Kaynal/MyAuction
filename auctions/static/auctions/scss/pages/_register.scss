@@ -1,0 +1,29 @@
+@use "../base/base" as base;
+
+.register-page_container {
+  @include base.page-dark;
+  @include base.flex-center;
+}
+
+.register-page_block {
+  @include base.card;
+  padding: 2.8125rem 4.6875rem;
+  display: flex;
+  flex-direction: column;
+  gap: .9375rem;
+}
+
+.register-page_title {
+  color: base.$primary;
+  @include base.title-lg;
+  text-align: center;
+}
+
+.btn {
+  width: 128px;
+  border-radius: 15px;
+  background: base.$primary;
+  color: base.$white;
+  padding: 7px;
+  margin: auto;
+}

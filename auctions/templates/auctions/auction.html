@@ -1,0 +1,95 @@
+{% extends "auctions/layout.html" %}
+
+{% block content %}
+<div class="auction-page_container">
+    <div class="auction-page_block">
+        <h2 class="page_item-h2">{{ auction.name }}</h2>
+        <div class="auction-page_description">
+            <p>{{ auction.description }}</p>
+        </div>
+        <div class="auction-page_start-price">Початкова ціна: {{ auction.start_price }}</div>
+
+        {% if auction.image %}
+            <div class="auction-page_img">
+                <img src="{{ auction.image.url }}" alt="{{ auction.name }}" style="max-width:300px;">
+            </div>
+        {% endif %}
+
+        <div class="auction-page_status">
+            {% if auction.active %}
+                <div class="page_status-text">Статус: Активний</div>
+            {% else %}
+                <div class="page_status-text">Статус: Закритий</div>
+                {% if auction.winner %}
+                    <div class="page_status-winner">Переможець: {{ auction.winner.username }}</div> 
+                {% else %}
+                    <div class="page_status-winner"><br>Переможця немає</div> 
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <h3>Ставки:</h3>
+        <ul class="auction-page_bids">
+            {% for bid in bids %}
+                <li class="page_bids-item">{{ bid.user.username }} — {{ bid.amount }}</li>
+            {% empty %}
+                <li class="page_bids-item">Ще немає ставок</li>
+            {% endfor %}
+        </ul>
+
+        {% if auction.active %}
+            <form method="post" class="auction-page_form">
+                {% csrf_token %}
+                <label for="bid" class="page_form-label">Enter bid:</label>
+                <input class="page_form-input" type="number" name="bid" step="0.01">
+                <button class="page_form-button" type="submit">Зробити ставку</button>
+            </form>
+
+            {% if user.is_authenticated and user == auction.owner and auction.active %}
+                <form class="auction-page_form" method="post" action="{% url 'close_auction' auction.id %}">
+                    {% csrf_token %}
+                    <button class="page_form-button" type="submit">Закрити аукціон</button>
+                </form>
+            {% endif %}
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            <form class="auction-page_form" method="post" action="{% url 'toggle_watchlist' auction.id %}">
+                {% csrf_token %}
+                <button class="page_form-button" type="submit">
+                    {% if in_watchlist %}
+                        Видалити зі списку відстеження
+                    {% else %}
+                        Додати до списку відстеження
+                    {% endif %}
+                </button>
+            </form>
+        {% endif %}
+
+        <h3>Коментарі</h3>
+        {% if comments %}
+            <ul class="auction-page_comments">
+                {% for comment in comments %}
+                    <li class="page_comments-item"><b>{{ comment.user.username }}</b>: {{ comment.text }} <i>({{ comment.created_at|date:"d.m.Y H:i" }})</i></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="auction-page_text">
+                <p>Коментарів поки що немає</p>
+            </div>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            <form class="auction-page_form" method="post">
+                {% csrf_token %}
+                <textarea class="auction-page_textarea" name="comment" rows="3" placeholder="Ваш коментар..."></textarea><br>
+                <button class="page_form-button" type="submit">Додати</button>
+            </form>
+        {% else %}
+            <div class="auction-page_text">
+                <p><a href="{% url 'login' %}">Увійдіть</a>, щоб залишити коментар.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
