@@ -198,3 +198,41 @@ def watchlist(request):
     return render(request, "auctions/watchlist.html", {
         "auctions": auctions
     })
+
+@login_required
+def dashboard(request):
+
+    my_auctions = Auctions.objects.filter(owner=request.user)
+
+    my_bids = Bid.objects.filter(
+        user=request.user
+    ).select_related("auction").order_by("-created_at")[:5]
+
+    favorites = Auctions.objects.filter(
+        watchlisted_by__user=request.user
+    )[:6]
+
+    won_auctions = Auctions.objects.filter(
+        winner=request.user
+    )
+
+    comments_count = Comments.objects.filter(
+        user=request.user
+    ).count()
+
+    context = {
+        "my_auctions": my_auctions,
+        "my_bids": my_bids,
+        "favorites": favorites,
+
+        "total_auctions": my_auctions.count(),
+        "active_auctions": my_auctions.filter(active=True).count(),
+        "won_auctions_count": won_auctions.count(),
+        "comments_count": comments_count,
+    }
+
+    return render(
+        request,
+        "auctions/dashboard.html",
+        context
+    )

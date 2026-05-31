@@ -26,9 +26,11 @@
         </ul>
         <div class="header_profile">
             {% if user.is_authenticated %}
-                Signed in as&nbsp;<strong>{{ user.username }}</strong>
-             {% else %}
-                 Not signed in.
+                <a href="{% url 'dashboard' %}" class="profile-link">
+                    Signed in as <strong>{{ user.username }}</strong>
+                </a>
+            {% else %}
+                Not signed in.
             {% endif %}
         </div>
     </div>

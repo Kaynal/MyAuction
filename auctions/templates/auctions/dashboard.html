@@ -1,0 +1,219 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-page">
+    <aside class="dashboard-sidebar">
+        <div class="sidebar-profile">
+            <div class="sidebar-avatar">
+                {{ user.username|slice:":1"|upper }}
+            </div>
+            <div class="sidebar-profile-info">
+                <h2>{{ user.get_full_name|default:user.username }}</h2>
+                <p>{{ user.email }}</p>
+                <span>Member since {{ user.date_joined|date:"F Y" }}</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a class="sidebar-link active" href="{% url 'dashboard' %}">Profile</a>
+            <a class="sidebar-link" href="{% url 'dashboard' %}">My Auctions</a>
+            <a class="sidebar-link" href="{% url 'dashboard' %}">My Bids</a>
+            <a class="sidebar-link" href="{% url 'watchlist' %}">Favorites</a>
+            <a class="sidebar-link" href="{% url 'dashboard' %}">Settings</a>
+        </nav>
+
+        <div class="sidebar-credits">
+            <span>Credits</span>
+            <strong>1,250</strong>
+        </div>
+
+        <a class="sidebar-logout" href="{% url 'logout' %}">Log Out</a>
+    </aside>
+
+    <main class="dashboard-main">
+        <div class="dashboard-topbar">
+            <div>
+                <p class="dashboard-label">Dashboard</p>
+                <h1>My Dashboard</h1>
+            </div>
+            <a href="{% url 'new_auction' %}" class="button-primary">+ New Auction</a>
+        </div>
+
+        <div class="stats-cards">
+            <article class="stats-card">
+                <span class="stats-card-label">Total Auctions</span>
+                <strong>{{ total_auctions }}</strong>
+            </article>
+            <article class="stats-card">
+                <span class="stats-card-label">Active Auctions</span>
+                <strong>{{ active_auctions }}</strong>
+            </article>
+            <article class="stats-card stats-card-highlight">
+                <span class="stats-card-label">Won Auctions</span>
+                <strong>{{ won_auctions_count }}</strong>
+            </article>
+            <article class="stats-card">
+                <span class="stats-card-label">Comments</span>
+                <strong>{{ comments_count }}</strong>
+            </article>
+        </div>
+
+        <div class="dashboard-content-grid">
+            <section class="dashboard-left-panel">
+                <div class="panel-card panel-auctions">
+                    <div class="panel-header">
+                        <div>
+                            <h2>My Auctions</h2>
+                            <p class="panel-subtitle">Active auctions that you created</p>
+                        </div>
+                        <div class="panel-tabs">
+                            <button class="tab active" type="button">Active</button>
+                            <button class="tab" type="button">Completed</button>
+                        </div>
+                    </div>
+
+                    <div class="auction-list">
+                        {% for auction in my_auctions %}
+                        <article class="auction-item">
+                            <div class="auction-card-image">
+                                {% if auction.image %}
+                                    <img src="{{ auction.image.url }}" alt="{{ auction.name }}">
+                                {% endif %}
+                            </div>
+                            <div class="auction-card-body">
+                                <h3>{{ auction.name }}</h3>
+                                <p class="auction-meta">Current: {{ auction.current_price }} · {{ auction.bids.count }} bids</p>
+                                <div class="auction-status {% if auction.active %}status-active{% else %}status-closed{% endif %}">
+                                    {% if auction.active %}Active{% else %}Closed{% endif %}
+                                </div>
+                            </div>
+                            <a class="auction-card-action" href="{% url 'auction' auction.id %}">View</a>
+                        </article>
+                        {% empty %}
+                        <div class="empty-state">You don't have auctions yet.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="panel-card panel-favorites">
+                    <div class="panel-header">
+                        <div>
+                            <h2>Favorites / Wishlist</h2>
+                        </div>
+                        <a href="{% url 'watchlist' %}" class="panel-link">View all</a>
+                    </div>
+                    <div class="favorites-grid">
+                        {% for auction in favorites %}
+                        <article class="favorite-card">
+                            {% if auction.image %}
+                            <div class="favorite-card-image">
+                                <img src="{{ auction.image.url }}" alt="{{ auction.name }}">
+                            </div>
+                            {% endif %}
+                            <div class="favorite-card-body">
+                                <h3>{{ auction.name }}</h3>
+                                <p>{{ auction.current_price }}</p>
+                                <a class="button-secondary" href="{% url 'auction' auction.id %}">Place Bid</a>
+                            </div>
+                        </article>
+                        {% empty %}
+                        <div class="empty-state">No favorite auctions.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="panel-card panel-settings">
+                    <div class="panel-header">
+                        <h2>Profile Settings</h2>
+                    </div>
+                    <div class="settings-grid">
+                        <div class="settings-panel">
+                            <h3>Edit Profile</h3>
+                            <form method="post" action="#">
+                                {% csrf_token %}
+                                <label>Username</label>
+                                <input class="input-field" type="text" value="{{ user.username }}" readonly>
+                                <label>Email Address</label>
+                                <input class="input-field" type="email" value="{{ user.email }}" readonly>
+                                <button class="button-primary" type="button">Save Changes</button>
+                            </form>
+                        </div>
+                        <div class="settings-panel">
+                            <h3>Change Password</h3>
+                            <form method="post" action="#">
+                                {% csrf_token %}
+                                <label>Current Password</label>
+                                <input class="input-field" type="password" placeholder="Enter current password">
+                                <label>New Password</label>
+                                <input class="input-field" type="password" placeholder="Enter new password">
+                                <label>Confirm New Password</label>
+                                <input class="input-field" type="password" placeholder="Confirm new password">
+                                <button class="button-dark" type="button">Update Password</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <aside class="dashboard-right-panel">
+                <div class="panel-card panel-bids">
+                    <div class="panel-header">
+                        <div>
+                            <h2>My Bids</h2>
+                            <p class="panel-subtitle">Recent bid activity</p>
+                        </div>
+                        <a href="{% url 'watchlist' %}" class="panel-link">View all</a>
+                    </div>
+                    <div class="bid-list">
+                        {% for bid in my_bids %}
+                        <article class="bid-item">
+                            <div>
+                                <h4>{{ bid.auction.name }}</h4>
+                                <p>Your bid: {{ bid.amount }}</p>
+                            </div>
+                            <span class="bid-status">Leading</span>
+                        </article>
+                        {% empty %}
+                        <div class="empty-state">No bids yet.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="panel-card panel-activity">
+                    <div class="panel-header">
+                        <h2>Activity History</h2>
+                    </div>
+                    <div class="activity-list">
+                        {% if my_bids %}
+                            {% for bid in my_bids|slice:":3" %}
+                            <article class="activity-item">
+                                <span class="activity-icon">●</span>
+                                <div>
+                                    <p>Placed bid {{ bid.amount }} on {{ bid.auction.name }}</p>
+                                    <small>{{ bid.created_at|date:"M d, Y" }}</small>
+                                </div>
+                            </article>
+                            {% endfor %}
+                        {% else %}
+                        <div class="empty-state">No recent activity.</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+</div>
+
+<footer class="dashboard-footer">
+    <div class="footer-row">
+        <p>Copyright © 2026 Auction Site. All rights reserved.</p>
+        <nav class="footer-links">
+            <a href="#">Terms & Conditions</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Contact Us</a>
+        </nav>
+    </div>
+</footer>
+{% endblock %}
