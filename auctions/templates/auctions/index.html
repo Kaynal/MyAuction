@@ -2,36 +2,92 @@
 
 {% block content %}
     <div class="index-page">
-        <div class="main_container">
-            <div class="main-block">
-                <div class="main-block_content">
-                    <h2 class="block-content_title">
-                        Accelerate, Elevate, and Innovate!
-                    </h2>
-                    <p class="block-content_text">
-                        Bid on Dream Cars, Exotic Animals, and Cutting-Edge Electronics!
-                    </p>
+        <!-- Header Section -->
+        <div class="index-header">
+            <div class="index-header-content">
+                <h1 class="index-title">Auction Dashboard</h1>
+                <p class="index-subtitle">Manage and discover premium on-going auctions.</p>
+            </div>
+            <div class="index-header-actions">
+                <a href="{% url 'new_auction' %}" class="button-primary">+ Create New Listing</a>
+            </div>
+        </div>
+
+        <!-- Featured Auction Section -->
+        <div class="featured-section">
+            <div class="featured-badge">Featured Auction</div>
+            <div class="featured-content">
+                <div class="featured-text">
+                    <h2 class="featured-title">Accelerate, Elevate, <span>and Innovate.</span></h2>
+                    <p class="featured-description">Join the world's most exclusive bidding platform. From vintage classics to cutting-edge technology, your next masterpiece is one bid away.</p>
+                    <div class="featured-actions">
+                        <a href="#auctions" class="button-featured">Check Auctions</a>
+                        <div class="verified-badge">
+                            <span class="verified-dot">●</span>
+                            Verified Assets Only
+                        </div>
+                    </div>
                 </div>
-                <div class="main-block_button">
-                    <button class="button_main-block">Check Auctions</button>
+                {% load static %}
+
+                <div class="featured-image">
+                    {% if featured_auction and featured_auction.image %}
+                        <img src="{{ featured_auction.image.url }}" alt="Featured Auction">
+                    {% else %}
+                        <img src="{% static 'auctions/images/background.jpg' %}" alt="Featured Auction">
+                    {% endif %}
                 </div>
             </div>
         </div>
 
-        <div class="auctions_container">
-            <ul class="auctions-list">
+        <!-- Trending Auctions Section -->
+        <div class="trending-section">
+            <div class="trending-header">
+                <h3 class="trending-title">Trending Auctions</h3>
+                <a href="#" class="view-all-link">View All Live Listings</a>
+            </div>
+
+            <div class="auctions-list-container">
                 {% for auction in auctions %}
-                <li class="auctions-list_item">
-                    <div class="list-item_name">{{auction.name}}</div>
-                    <div class="list-item_id">ID: {{auction.id}}</div>
-                    <div class="list-item_description">{{auction.description}}</div>
-                    <div class="list-item_price">Стартова ціна: {{auction.start_price}}</div>
-                    <div class="auction-list_button">
-                        <a href="{% url 'auction' auction.id %}"><button class="list-button">Переглянути лот</button></a>
+                <div class="auction-list-item">
+                    <div class="auction-item-image">
+                        {% if auction.image %}
+                            <img src="{{ auction.image.url }}" alt="{{ auction.name }}">
+                        {% else %}
+                            <div class="no-image-placeholder">{{ auction.name }}</div>
+                        {% endif %}
                     </div>
-                </li>
+                    
+                    <div class="auction-item-body">
+                        <div class="auction-item-header">
+                            <span class="category-badge">{% if forloop.counter == 1 %}Automotive{% elif forloop.counter == 2 %}Timepieces{% elif forloop.counter == 3 %}Fine Art{% else %}Technology{% endif %}</span>
+                            <span class="hot-interest">🔥 Hot Interest</span>
+                        </div>
+
+                        <h4 class="auction-item-title">{{ auction.name }}</h4>
+                        
+                        <div class="auction-item-footer">
+                            <div class="auction-item-stats">
+                                <div class="stat-item">
+                                    <div class="stat-label">CURRENT BID</div>
+                                    <div class="stat-value">${{ auction.current_price }}</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">ENDING IN</div>
+                                    <div class="stat-value">2h 15m</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">TOTAL BIDS</div>
+                                    <div class="stat-value">{{ auction.bids.count }} Active Bids</div>
+                                </div>
+                            </div>
+
+                            <a href="{% url 'auction' auction.id %}" class="button-view-details">View Details</a>
+                        </div>
+                    </div>
+                </div>
                 {% endfor %}
-            </ul>
+            </div>
         </div>
     </div>
 {% endblock %}

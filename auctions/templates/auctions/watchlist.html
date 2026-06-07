@@ -1,26 +1,63 @@
 {% extends "auctions/layout.html" %}
 
 {% block content %}
-<div class="watchlist-page_container">
+<div class="watchlist-page">
+    <!-- Header Section -->
+    <div class="watchlist-header">
+        <div class="watchlist-header-content">
+            <h1 class="watchlist-title">Список відстеження</h1>
+            <p class="watchlist-subtitle">Ваші збережені аукціони</p>
+        </div>
+    </div>
 
-    <h2 class="watchlist-title">Список відстеження</h2>
-
+    <!-- Watchlist Items Section -->
     {% if auctions %}
-        <ul class="auctions-list">
+    <div class="watchlist-container">
+        <div class="auctions-list-container">
             {% for auction in auctions %}
-            <li class="auctions-list_item">
-                <div class="list-item_name">{{auction.name}}</div>
-                <div class="list-item_id">ID: {{auction.id}}</div>
-                <div class="list-item_description">{{auction.description}}</div>
-                <div class="list-item_price">Поточна ставка: {{ auction.current_price }}</div>
-                <div class="auction-list_button">
-                    <a href="{% url 'auction' auction.id %}"><button class="list-button">Переглянути лот</button></a>
+            <div class="auction-list-item">
+                <div class="auction-item-image">
+                    {% if auction.image %}
+                        <img src="{{ auction.image.url }}" alt="{{ auction.name }}">
+                    {% else %}
+                        <div class="no-image-placeholder">{{ auction.name }}</div>
+                    {% endif %}
                 </div>
-            </li>
+                
+                <div class="auction-item-body">
+                    <div class="auction-item-header">
+                        <span class="category-badge">{% if auction.active %}Активний{% else %}Завершений{% endif %}</span>
+                        <span class="hot-interest">⭐ Вподобаний</span>
+                    </div>
+
+                    <h4 class="auction-item-title">{{ auction.name }}</h4>
+                    
+                    <div class="auction-item-footer">
+                        <div class="auction-item-stats">
+                            <div class="stat-item">
+                                <div class="stat-label">ПОТОЧНА СТАВКА</div>
+                                <div class="stat-value">${{ auction.current_price }}</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">СТАВОК</div>
+                                <div class="stat-value">{{ auction.bids.count }}</div>
+                            </div>
+                        </div>
+
+                        <a href="{% url 'auction' auction.id %}" class="button-view-details">Переглянути</a>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
-        </ul>
+        </div>
+    </div>
     {% else %}
-        <p class="watchlist-empty">Ваш список відстеження порожній!</p>
+        <div class="watchlist-container">
+            <div class="empty-watchlist">
+                <p class="watchlist-empty">😔 Ваш список відстеження порожній!</p>
+                <a href="{% url 'index' %}" class="button-featured">Переглянути аукціони</a>
+            </div>
+        </div>
     {% endif %}
 
 </div>
