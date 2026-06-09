@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from datetime import timedelta
 from django.utils import timezone
 
 
@@ -16,6 +17,8 @@ class Auctions(models.Model):
     active = models.BooleanField(default=True)  # чи активний аукціон
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="my_auctions", null=True, blank=True)
     winner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="won_auctions")
+    end_time = models.DateTimeField(null=True, blank=True)
+
     def __str__(self):
         return f"{self.name}: {self.start_price} ({self.description})"
     

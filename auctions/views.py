@@ -3,15 +3,28 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone  # Добавлено для работы со временем
 
 from .models import User, Auctions, Bid, Comments, Watchlist
-
 from django.contrib import messages
 
 
+def close_expired_auctions():
+    """ Вспомогательная функция для автоматического закрытия просроченных лотов """
+    now = timezone.now()
+    # Ищем только активные аукционы, у которых задано время завершения и оно уже прошло
+    expired_auctions = Auctions.objects.filter(active=True, end_time__isnull=False, end_time__lte=now)
+    for auction in expired_auctions:
+        highest_bid = auction.bids.order_by("-amount").first()
+        if highest_bid:
+            auction.winner = highest_bid.user
+        auction.active = False
+        auction.save()
+
+
 def index(request):
+    close_expired_auctions()  # Проверяем таймеры перед выводом главной страницы
     return render(request, "auctions/index.html", {
         "auctions": Auctions.objects.all()
     })
@@ -19,7 +32,6 @@ def index(request):
 
 def login_view(request):
     if request.method == "POST":
-
         # Attempt to sign user in
         username = request.POST["username"]
         password = request.POST["password"]
@@ -67,7 +79,7 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
-    
+
 
 @login_required
 def new_auction(request):
@@ -76,13 +88,15 @@ def new_auction(request):
         description = request.POST.get("content")
         start_price = request.POST.get("start_price")
         image = request.FILES.get("image")
+        end_time = request.POST.get("end_time")  # Получаем время окончания лота
 
         auction = Auctions(
-            name = title,
-            description = description,
-            start_price = start_price,
-            image = image,
-            owner = request.user
+            name=title,
+            description=description,
+            start_price=start_price,
+            image=image,
+            owner=request.user,
+            end_time=end_time if end_time else None  # Если не указано, запишется Null (Безлимит)
         )
         auction.save()
 
@@ -93,13 +107,17 @@ def new_auction(request):
 
 @login_required
 def auction(request, auction_id):
-    auction = Auctions.objects.get(pk=auction_id)
+    close_expired_auctions()  # Проверяем время перед открытием конкретного лота
+    
+    auction = get_object_or_404(Auctions, pk=auction_id)
     bids = auction.bids.all().order_by("-amount")  # всі ставки
     highest_bid = bids.first().amount if bids.exists() else None
     comments = auction.comments.all().order_by("-created_at")
     in_watchlist = Watchlist.objects.filter(user=request.user, auction=auction).exists() if request.user.is_authenticated else False
 
     if request.method == "POST":
+        # ТВОЙ ОРИГИНАЛЬНЫЙ БЛОК ОБРАБОТКИ ФОРМ
+        
         # Якщо прийшла форма з коментарем
         if "comment" in request.POST:
             if request.user.is_authenticated:
@@ -194,14 +212,16 @@ def toggle_watchlist(request, auction_id):
 
 @login_required
 def watchlist(request):
+    close_expired_auctions()  # Проверяем таймеры перед выводом списка отслеживания
     auctions = Auctions.objects.filter(watchlisted_by__user=request.user)
     return render(request, "auctions/watchlist.html", {
         "auctions": auctions
     })
 
+
 @login_required
 def dashboard(request):
-
+    close_expired_auctions()  # Проверяем таймеры в личном кабинете
     my_auctions = Auctions.objects.filter(owner=request.user)
 
     my_bids = Bid.objects.filter(
@@ -224,15 +244,11 @@ def dashboard(request):
         "my_auctions": my_auctions,
         "my_bids": my_bids,
         "favorites": favorites,
+        "won_auctions": won_auctions,
 
         "total_auctions": my_auctions.count(),
         "active_auctions": my_auctions.filter(active=True).count(),
-        "won_auctions_count": won_auctions.count(),
+        "won_count": won_auctions.count(),
         "comments_count": comments_count,
     }
-
-    return render(
-        request,
-        "auctions/dashboard.html",
-        context
-    )
+    return render(request, "auctions/dashboard.html", context)

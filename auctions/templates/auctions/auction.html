@@ -18,7 +18,13 @@
         <div class="auction-page_status">
             {% if auction.active %}
                 <div class="page_status-text">Статус: Активний</div>
-            {% else %}
+                
+                {% if auction.end_time %}
+                    <div class="auction-timer" style="margin: 10px 0; padding: 10px; background-color: #f8d7da; color: #721c24; border-radius: 5px; font-weight: bold;">
+                        До завершення: <span id="countdown" data-endtime="{{ auction.end_time|date:'c' }}">Завантаження...</span>
+                    </div>
+                {% endif %}
+                {% else %}
                 <div class="page_status-text">Статус: Закритий</div>
                 {% if auction.winner %}
                     <div class="page_status-winner">Переможець: {{ auction.winner.username }}</div> 
@@ -92,4 +98,5 @@
         {% endif %}
     </div>
 </div>
+
 {% endblock %}

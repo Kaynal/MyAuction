@@ -39,6 +39,20 @@
                                 <div class="stat-value">${{ auction.current_price }}</div>
                             </div>
                             <div class="stat-item">
+                                <div class="stat-label">ЗАВЕРШЕННЯ</div>
+                                <div class="stat-value">
+                                    {% if auction.active %}
+                                        {% if auction.end_time %}
+                                            <span class="card-countdown" data-endtime="{{ auction.end_time|date:'c' }}">Завантаження...</span>
+                                        {% else %}
+                                            <span style="color: #6c757d; font-weight: normal;">Безліміт</span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span style="color: #dc3545; font-weight: bold;">Закрито</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="stat-item">
                                 <div class="stat-label">СТАВОК</div>
                                 <div class="stat-value">{{ auction.bids.count }}</div>
                             </div>
@@ -61,4 +75,5 @@
     {% endif %}
 
 </div>
+
 {% endblock %}
