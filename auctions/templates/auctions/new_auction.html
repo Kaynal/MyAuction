@@ -11,23 +11,21 @@
                 {% csrf_token %}
 
                 <label class="new-auction_label">Назва:</label>
-                <input type="text" name="title" class="new-auction_input" required>
+                {{ form.name }}
 
                 <label class="new-auction_label">Опис:</label>
-                <textarea name="content" rows="8" class="new-auction_textarea" required></textarea>
+                {{ form.description }}
 
                 <label class="new-auction_label">Початкова ставка:</label>
-                <input type="number" name="start_price" step="0.01" min="0" class="new-auction_input" required>
+                {{ form.start_price }}
 
                 <label class="new-auction_label">Зображення:</label>
-                <input type="file" name="image" class="new-auction_file">
+                {{ form.image }}
 
                 <label for="end_time" class="new-auction_label">Час завершення аукціону:</label>
-                <input type="datetime-local" id="end_time" name="end_time" class="new-auction_input" required>
+                {{ form.end_time }}
 
-                <button type="submit" class="page_form-button button-save">
-                    Зберегти
-                </button>
+                <button type="submit" class="new-auction_button">Створити</button>
             </form>
         </div>
     </div>

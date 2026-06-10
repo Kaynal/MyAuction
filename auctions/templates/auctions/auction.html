@@ -44,15 +44,21 @@
         </ul>
 
         {% if auction.active %}
-            <form method="post" class="auction-page_form">
+            <form method="post" class="auction-page_form" novalidate>
                 {% csrf_token %}
-                <label for="bid" class="page_form-label">Enter bid:</label>
-                <input class="page_form-input" type="number" name="bid" step="0.01">
+                
+                {% if bid_form.amount.errors %}
+                    <div class="form-errors" style="color: #dc3545; font-weight: bold; margin-bottom: 10px; list-style: none;">
+                        {{ bid_form.amount.errors }}
+                    </div>
+                {% endif %}
+
+                {{ bid_form.amount }}
                 <button class="page_form-button" type="submit">Зробити ставку</button>
             </form>
 
             {% if user.is_authenticated and user == auction.owner and auction.active %}
-                <form class="auction-page_form" method="post" action="{% url 'close_auction' auction.id %}">
+                <form class="auction-page_form" method="post" action="{% url 'close_auction' auction.id %}" novalidate>
                     {% csrf_token %}
                     <button class="page_form-button" type="submit">Закрити аукціон</button>
                 </form>
@@ -86,9 +92,16 @@
         {% endif %}
 
         {% if user.is_authenticated %}
-            <form class="auction-page_form" method="post">
+            <form class="auction-page_form" method="post" novalidate>
                 {% csrf_token %}
-                <textarea class="auction-page_textarea" name="comment" rows="3" placeholder="Ваш коментар..."></textarea><br>
+                
+                {% if comment_form.text.errors %}
+                    <div class="form-errors" style="color: #dc3545; font-weight: bold; margin-bottom: 10px; list-style: none;">
+                        {{ comment_form.text.errors }}
+                    </div>
+                {% endif %}
+
+                {{ comment_form.text }}<br>
                 <button class="page_form-button" type="submit">Додати</button>
             </form>
         {% else %}
