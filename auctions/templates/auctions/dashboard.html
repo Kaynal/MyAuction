@@ -27,10 +27,9 @@
     <main class="dashboard-main">
         <div class="dashboard-topbar">
             <div>
-                <p class="dashboard-label">Dashboard</p>
-                <h1>My Dashboard</h1>
+                <h1>Мій Кабінет</h1>
             </div>
-            <a href="{% url 'new_auction' %}" class="button-primary">+ New Auction</a>
+            <a href="{% url 'new_auction' %}" class="button-primary">+ Створити новий лот</a>
         </div>
 
         <div class="stats-cards">
@@ -42,7 +41,7 @@
                 <span class="stats-card-label">Active Auctions</span>
                 <strong>{{ active_auctions }}</strong>
             </article>
-            <article class="stats-card stats-card-highlight">
+            <article class="stats-card">
                 <span class="stats-card-label">Won Auctions</span>
                 <strong>{{ won_auctions_count }}</strong>
             </article>
@@ -58,17 +57,17 @@
                     <div class="panel-header">
                         <div>
                             <h2>My Auctions</h2>
-                            <p class="panel-subtitle">Active auctions that you created</p>
+                            <p class="panel-subtitle" id="auctions-subtitle">Active auctions that you created</p>
                         </div>
                         <div class="panel-tabs">
-                            <button class="tab active" type="button">Active</button>
-                            <button class="tab" type="button">Completed</button>
+                            <button class="tab active" id="tab-active" type="button" onclick="switchAuctionsTab('active')">Active</button>
+                            <button class="tab" id="tab-completed" type="button" onclick="switchAuctionsTab('completed')">Completed</button>
                         </div>
                     </div>
 
-                    <div class="auction-list">
+                    <div class="auction-list" id="auctions-container">
                         {% for auction in my_auctions %}
-                        <article class="auction-item">
+                        <article class="auction-item {% if auction.active %}js-active-auction{% else %}js-completed-auction{% endif %}">
                             <div class="auction-card-image">
                                 {% if auction.image %}
                                     <img src="{{ auction.image.url }}" alt="{{ auction.name }}">
@@ -86,6 +85,8 @@
                         {% empty %}
                         <div class="empty-state">You don't have auctions yet.</div>
                         {% endfor %}
+                        
+                        <div class="empty-state" id="tab-empty-state" style="display: none;">No auctions found in this category.</div>
                     </div>
                 </div>
 

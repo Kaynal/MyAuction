@@ -1,37 +1,30 @@
 <div class="header">
     <div class="header_container">
-        <h1>Auctions</h1>
+        <h1>MyAuction</h1>
         <ul class="header_nav">
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'watchlist' %}">Watchlist</a>
+                <a class="nav-link" href="{% url 'index' %}">Домашня сторінка</a>
             </li>
             {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                    <a class="nav-link" href="{% url 'watchlist' %}">Список відстеження</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'new_auction' %}">Create Auction</a>
+                    <a href="{% url 'dashboard' %}" class="nav-link">
+                        Кабінет користувача <strong>{{ user.username }}</strong>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Вийти</a>
                 </li>
             {% else %}
                 <li class="nav-item">
-                     <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                     <a class="nav-link" href="{% url 'login' %}">Увійти</a>
                  </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    <a class="nav-link" href="{% url 'register' %}">Зареєструватися</a>
                 </li>
             {% endif %}
         </ul>
-        <div class="header_profile">
-            {% if user.is_authenticated %}
-                <a href="{% url 'dashboard' %}" class="profile-link">
-                    Signed in as <strong>{{ user.username }}</strong>
-                </a>
-            {% else %}
-                Not signed in.
-            {% endif %}
-        </div>
     </div>
 </div>
