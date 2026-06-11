@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import Auctions, Bid, Comments
+from .models import Auctions, Bid, Comments, User
 
 class AuctionForm(forms.ModelForm):
     """ Форма для створення нового аукціонного лоту """
@@ -67,3 +67,12 @@ class CommentForm(forms.ModelForm):
         if not text or not text.strip():
             raise ValidationError("Коментар не може бути порожнім.")
         return text
+    
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+        }

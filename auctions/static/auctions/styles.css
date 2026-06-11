@@ -1208,25 +1208,33 @@ h1 {
 
 /* ///////////////////////// */
 
+/* ==========================================================================
+   UPDATED DASHBOARD PAGE STYLES (Modern, Minimalistic & Auto-Height Grid)
+   ========================================================================== */
+
 .dashboard-page {
     display: grid;
-    grid-template-columns: 280px 1fr;
+    grid-template-columns: 300px 1fr;
     gap: 32px;
     max-width: 1400px;
     margin: 40px auto 80px;
     padding: 0 24px;
     min-height: calc(100vh - 80px);
+    align-items: flex-start; /* ФИКС: блоки теперь по высоте зависят строго от контента */
 }
 
+/* Боковая панель профиля */
 .dashboard-sidebar {
-    background: #2d1016;
-    color: #ffffff;
-    border-radius: 28px;
+    background: #ffffff;
+    color: #1e293b;
+    border-radius: 24px;
     padding: 32px 24px;
     display: flex;
     flex-direction: column;
-    gap: 28px;
-    min-height: 780px;
+    gap: 24px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    /* min-height: 780px; — УДАЛЕНО, чтобы высота адаптировалась под контент */
 }
 
 .sidebar-profile {
@@ -1235,61 +1243,84 @@ h1 {
     align-items: center;
 }
 
-.sidebar-profile-info h2 {
-    font-size: 1.5rem;
-    margin-bottom: 6px;
-}
-
-.sidebar-profile-info p,
-.sidebar-profile-info span {
-    color: rgba(255, 255, 255, 0.72);
-    font-size: 0.95rem;
-}
-
-.sidebar-nav {
+.sidebar-avatar {
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
+    border-radius: 50%;
+    background: #d5482c; /* Наш фирменный терракотовый */
     display: grid;
-    gap: 10px;
-}
-
-.sidebar-link {
-    display: block;
-    padding: 14px 18px;
-    border-radius: 18px;
-    color: rgba(255, 255, 255, 0.88);
-    background: transparent;
-    transition: all 0.2s ease;
-}
-
-.sidebar-link:hover,
-.sidebar-link.active {
-    background: rgba(255, 255, 255, 0.08);
+    place-items: center;
+    font-size: 1.5rem;
+    font-weight: 700;
     color: #ffffff;
 }
 
+.sidebar-profile-info h2 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.sidebar-profile-info p {
+    color: #64748b;
+    font-size: 0.9rem;
+    word-break: break-all; /* ФИКС: длинная почта больше не вылазит наружу */
+    margin-bottom: 2px;
+}
+
+.sidebar-profile-info span {
+    color: #94a3b8;
+    font-size: 0.8rem;
+    display: block;
+}
+
+/* Виджет баланса / кредитов */
 .sidebar-credits {
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 22px;
-    padding: 18px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-weight: 600;
 }
 
-.sidebar-credits strong {
-    color: #ffd1b3;
+.sidebar-credits span {
+    font-size: 0.85rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
 }
 
+.sidebar-credits strong {
+    color: #d5482c;
+    font-size: 1.3rem;
+    font-weight: 800;
+}
+
+/* Кнопка выхода */
 .sidebar-logout {
     display: block;
     padding: 14px 18px;
-    border-radius: 18px;
-    background: #bf5132;
-    color: #ffffff;
+    border-radius: 14px;
+    background: #fff5f5;
+    color: #ef4444;
     text-align: center;
-    font-weight: 600;
+    font-weight: 700;
+    border: 1px solid #fee2e2;
+    transition: all 0.2s ease;
 }
 
+.sidebar-logout:hover {
+    background: #fee2e2;
+}
+
+
+/* Основная рабочая область */
 .dashboard-main {
     display: flex;
     flex-direction: column;
@@ -1306,27 +1337,30 @@ h1 {
 .dashboard-label {
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: #bf5132;
+    color: #d5482c;
     font-weight: 700;
     margin-bottom: 10px;
 }
 
 .dashboard-topbar h1 {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #1e293b;
     margin: 0;
 }
 
+/* Универсальные кнопки */
 .button-primary,
 .button-dark,
 .button-secondary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 16px;
-    padding: 14px 22px;
+    border-radius: 14px;
+    padding: 14px 24px;
     font-weight: 700;
     text-decoration: none;
-    transition: background 0.2s ease, transform 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 .button-primary {
@@ -1335,26 +1369,31 @@ h1 {
 }
 
 .button-primary:hover {
-    background: #c43f27;
+    background: #b83a21;
 }
 
 .button-dark {
-    background: #3d1c1f;
+    background: #1e293b;
     color: #ffffff;
+}
+
+.button-dark:hover {
+    background: #0f172a;
 }
 
 .button-secondary {
-    background: #4f1f1f;
-    color: #ffffff;
+    background: #f1f5f9;
+    color: #475569;
     width: 100%;
-    justify-content: center;
+    border: 1px solid #e2e8f0;
 }
 
-.button-secondary:hover,
-.button-dark:hover {
-    background: #622426;
+.button-secondary:hover {
+    background: #e2e8f0;
+    color: #1e293b;
 }
 
+/* Сетка карточек быстрой статистики */
 .stats-cards {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1363,31 +1402,40 @@ h1 {
 
 .stats-card {
     background: #ffffff;
-    padding: 28px 24px;
-    border-radius: 24px;
-    box-shadow: 0 22px 60px rgba(17, 17, 17, 0.09);
+    padding: 24px;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
 }
 
 .stats-card-highlight {
-    background: #3d1015;
+    background: #1e293b;
+    border-color: #1e293b;
     color: #ffffff;
 }
 
 .stats-card-label {
     display: block;
-    color: rgba(51, 51, 51, 0.6);
-    font-size: 0.95rem;
-    margin-bottom: 16px;
+    color: #64748b;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.stats-card-highlight .stats-card-label {
+    color: #94a3b8;
 }
 
 .stats-card strong {
-    font-size: 2.15rem;
+    font-size: 2rem;
+    font-weight: 800;
     display: block;
 }
 
+/* Сетка основного контента личного кабинета */
 .dashboard-content-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 360px;
+    grid-template-columns: minmax(0, 1fr) 380px;
     gap: 24px;
 }
 
@@ -1395,13 +1443,16 @@ h1 {
 .dashboard-right-panel {
     display: grid;
     gap: 24px;
+    align-content: flex-start;
 }
 
+/* Карточки панелей */
 .panel-card {
     background: #ffffff;
-    border-radius: 28px;
-    padding: 26px;
-    box-shadow: 0 22px 60px rgba(17, 17, 17, 0.08);
+    border-radius: 24px;
+    padding: 32px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
 }
 
 .panel-header {
@@ -1414,41 +1465,50 @@ h1 {
 
 .panel-header h2 {
     margin: 0;
-    font-size: 1.4rem;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #1e293b;
 }
 
 .panel-subtitle {
-    margin: 8px 0 0;
-    color: #6f6f6f;
+    margin: 6px 0 0;
+    color: #64748b;
     font-size: 0.95rem;
 }
 
+/* Вкладки (Tabs) */
 .panel-tabs {
     display: flex;
-    gap: 10px;
+    gap: 8px;
 }
 
 .tab {
     border: none;
     border-radius: 999px;
-    padding: 10px 16px;
-    background: #f3f3f3;
-    color: #533333;
+    padding: 8px 16px;
+    background: #f1f5f9;
+    color: #475569;
     font-weight: 700;
+    font-size: 0.9rem;
     cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .tab.active {
-    background: #561314;
+    background: #1e293b;
     color: #ffffff;
 }
 
 .panel-link {
-    color: #bf5132;
+    color: #d5482c;
     font-weight: 700;
-    text-decoration: none;
+    font-size: 0.95rem;
+}
+.panel-link:hover {
+    text-decoration: underline;
 }
 
+/* Списки элементов */
 .auction-list,
 .bid-list,
 .activity-list {
@@ -1456,264 +1516,307 @@ h1 {
     gap: 16px;
 }
 
+/* Мини-карточка аукциона в списке */
 .auction-item {
     display: grid;
-    grid-template-columns: 100px minmax(0, 1fr) auto;
-    gap: 18px;
+    grid-template-columns: 80px minmax(0, 1fr) auto;
+    gap: 20px;
     align-items: center;
-    padding: 18px;
-    border-radius: 22px;
-    border: 1px solid #f0f0f0;
+    padding: 16px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
 }
 
 .auction-card-image img {
-    width: 100px;
-    height: 100px;
-    border-radius: 20px;
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
     object-fit: cover;
+    background: #f1f5f9;
 }
 
 .auction-card-body h3 {
-    margin: 0 0 10px;
+    margin: 0 0 6px;
     font-size: 1.05rem;
+    font-weight: 700;
+    color: #1e293b;
 }
 
 .auction-meta {
     margin: 0;
-    color: #777777;
-    font-size: 0.95rem;
+    color: #64748b;
+    font-size: 0.9rem;
 }
 
+/* Статусные бейджи */
 .auction-status {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: fit-content;
-    margin-top: 10px;
-    padding: 8px 14px;
+    margin-top: 8px;
+    padding: 6px 12px;
     border-radius: 999px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 700;
 }
 
 .status-active {
-    background: #e8f7ed;
-    color: #1d7b3d;
+    background: #ecfdf5;
+    color: #065f46;
+    padding: .625rem .625rem;
+    font-size: .875rem;
+    border-radius: .875rem;
 }
 
 .status-closed {
-    background: #f8e4e7;
-    color: #a92e42;
+    background: #fff5f5;
+    color: #991b1b;
+    padding: .625rem 0;
+    font-size: .875rem;
+    border-radius: .875rem;
 }
 
 .auction-card-action {
     align-self: center;
-    padding: 10px 18px;
-    border-radius: 16px;
-    background: #2d1016;
-    color: #ffffff;
-    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 12px;
+    background: #f1f5f9;
+    color: #1e293b;
     font-weight: 700;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+.auction-card-action:hover {
+    background: #d5482c;
+    color: #ffffff;
 }
 
+/* Сетка избранного */
 .favorites-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
+    gap: 20px;
 }
 
 .favorite-card {
     display: grid;
-    gap: 14px;
-    background: #fafafa;
-    border-radius: 24px;
+    gap: 0;
+    background: #ffffff;
+    border-radius: 20px;
     overflow: hidden;
+    border: 1px solid #e2e8f0;
 }
 
 .favorite-card-image img {
     width: 100%;
-    height: 180px;
+    height: 160px;
     object-fit: cover;
+    background: #f1f5f9;
 }
 
 .favorite-card-body {
-    padding: 18px;
+    padding: 20px;
 }
 
 .favorite-card-body h3 {
-    margin: 0 0 10px;
+    margin: 0 0 6px;
     font-size: 1.05rem;
+    font-weight: 700;
+    color: #1e293b;
 }
 
 .favorite-card-body p {
     margin: 0 0 16px;
-    color: #6d6d6d;
+    color: #64748b;
+    font-size: 0.9rem;
 }
 
+/* Элементы ставок и активности */
+.bid-item,
+.activity-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 16px;
+    border-radius: 16px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+.bid-item h4 {
+    margin: 0 0 4px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.activity-item p {
+    margin: 0 0 4px;
+    font-size: 0.95rem;
+    color: #334155;
+}
+
+.bid-item p,
+.activity-item small {
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+.bid-status {
+    margin-left: auto;
+    color: #10b981;
+    font-weight: 700;
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+.activity-icon {
+    margin-top: 2px;
+    font-size: 0.8rem;
+    color: #d5482c;
+}
+
+/* Заглушка пустого состояния */
+.empty-state {
+    padding: 32px;
+    border-radius: 16px;
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    color: #64748b;
+    text-align: center;
+    font-size: 0.95rem;
+    font-style: italic;
+}
+
+/* Настройки профиля */
 .panel-settings {
     display: grid;
-    gap: 18px;
+    gap: 20px;
 }
 
 .settings-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
+    gap: 20px;
 }
 
 .settings-panel {
-    background: #f9f7f6;
-    border-radius: 22px;
-    padding: 22px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 24px;
 }
 
 .settings-panel h3 {
     margin-top: 0;
     margin-bottom: 18px;
     font-size: 1.1rem;
-}
-
-.input-field {
-    width: 100%;
-    border-radius: 16px;
-    border: 1px solid #e0dede;
-    padding: 14px 16px;
-    margin-bottom: 16px;
-    font-size: 0.95rem;
-    background: #ffffff;
+    font-weight: 700;
+    color: #1e293b;
 }
 
 .settings-panel label {
     display: block;
     margin-bottom: 8px;
-    font-weight: 600;
-}
-
-.bid-item,
-.activity-item {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-    padding: 16px 18px;
-    border-radius: 22px;
-    background: #fafafa;
-    border: 1px solid #f0f0f0;
-}
-
-.bid-item h4,
-.activity-item p {
-    margin: 0 0 8px;
-}
-
-.bid-item p,
-.activity-item small {
-    color: #6e6e6e;
-    font-size: 0.95rem;
-}
-
-.bid-status {
-    margin-left: auto;
-    color: #2d7a44;
     font-weight: 700;
-    white-space: nowrap;
-}
-
-.activity-icon {
-    margin-top: 4px;
     font-size: 0.85rem;
-    color: #bf5132;
+    color: #475569;
+    text-transform: uppercase;
 }
 
-.empty-state {
-    padding: 28px;
-    border-radius: 22px;
-    background: #fff7f5;
-    color: #7e5a57;
-    text-align: center;
-    font-size: 0.98rem;
-}
-
-.dashboard-footer {
-    margin: 0 auto 40px;
-    max-width: 1400px;
-    padding: 24px 24px 16px;
-    color: rgba(51, 51, 51, 0.75);
+.input-field {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+    padding: 12px 16px;
+    margin-bottom: 16px;
     font-size: 0.95rem;
+    background: #ffffff;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+.input-field:focus {
+    border-color: #d5482c;
 }
 
-.footer-row {
+
+.main-footer {
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    padding: 24px 0;
+    margin-top: auto;
+}
+
+.footer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 32px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 16px;
-    padding: 20px 24px;
-    background: #ffffff;
-    border-radius: 24px;
-    box-shadow: 0 22px 60px rgba(17, 17, 17, 0.08);
+    color: #64748b;
+    font-size: 0.9rem;
+}
+.footer-text{
+    margin: 0;
 }
 
 .footer-links {
     display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
+    gap: 28px;
 }
 
 .footer-links a {
-    color: rgba(51, 51, 51, 0.75);
-    text-decoration: none;
+    color: #64748b;
+    font-weight: 500;
     transition: color 0.2s ease;
 }
 
 .footer-links a:hover {
-    color: #bf5132;
+    color: #d5482c;
 }
 
-.sidebar-avatar {
-    width: 64px;
-    height: 64px;
-    min-width: 64px;
-    min-height: 64px;
-    aspect-ratio: 1 / 1;
-    border-radius: 50%;
-    background: #bf5132;
-    display: grid;
-    place-items: center;
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #fff;
-}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN BREAKPOINTS
+   ========================================================================== */
 
 @media (max-width: 1220px) {
     .dashboard-page {
         grid-template-columns: 1fr;
     }
 
-    .dashboard-sidebar {
-        min-height: auto;
-    }
-
     .dashboard-content-grid {
         grid-template-columns: 1fr;
     }
 
-    .favorites-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .settings-grid {
-        grid-template-columns: 1fr;
+    .stats-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
 @media (max-width: 780px) {
     .dashboard-page {
         padding: 16px;
+        margin-top: 20px;
+    }
+
+    .stats-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .favorites-grid,
+    .settings-grid {
+        grid-template-columns: 1fr;
     }
 
     .dashboard-topbar,
     .panel-header {
         flex-direction: column;
         align-items: stretch;
+        gap: 12px;
     }
 
     .button-primary,
@@ -1721,4 +1824,12 @@ h1 {
     .button-dark {
         width: 100%;
     }
+}
+.button-primary {
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out !important;
+}
+a:hover {
+    color: #ffffff !important;
+    text-decoration: none !important;
+    text-decoration: underline !important;
 }

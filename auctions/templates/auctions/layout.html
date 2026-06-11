@@ -1,5 +1,4 @@
 {% load static %}
-{% load sass_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -18,6 +17,8 @@
             {% block content %}
             {% endblock %}
         </main>
+
+        {% include "auctions/footer.html" %}
     </div>
 
     <script src="{% static 'auctions/js/auction_timers.js' %}"></script>
