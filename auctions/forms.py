@@ -6,12 +6,15 @@ class AuctionForm(forms.ModelForm):
     """ Форма для створення нового аукціонного лоту """
     class Meta:
         model = Auctions
-        fields = ['name', 'description', 'start_price', 'image', 'end_time']
+        # Добавили 'category' в список полей
+        fields = ['name', 'description', 'start_price', 'image', 'category', 'end_time']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'new-auction_input'}),
             'description': forms.Textarea(attrs={'class': 'new-auction_textarea', 'rows': 8}),
             'start_price': forms.NumberInput(attrs={'class': 'new-auction_input', 'step': '0.01', 'min': '0'}),
             'image': forms.FileInput(attrs={'class': 'new-auction_file'}),
+            # Добавили виджет для категории с вашим CSS-классом для инпутов
+            'category': forms.Select(attrs={'class': 'new-auction_input'}),
             'end_time': forms.DateTimeInput(attrs={'class': 'new-auction_input', 'type': 'datetime-local'}),
         }
 

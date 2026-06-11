@@ -10,11 +10,23 @@ class User(AbstractUser):
 
 
 class Auctions(models.Model):
+    CATEGORY_CHOICES = [
+        ('tech', 'Technology'),
+        ('art', 'Fine Art'),
+        ('fashion', 'Fashion'),
+        ('home', 'Home & Garden'),
+        ('other', 'Other'),
+    ]
     name = models.CharField(max_length=64)
     description = models.TextField()
     start_price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to="auction_images/", blank=True, null=True)
-    active = models.BooleanField(default=True)  # чи активний аукціон
+    active = models.BooleanField(default=True)
+    category = models.CharField(
+        max_length=20, 
+        choices=CATEGORY_CHOICES, 
+        default='other'
+    )
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="my_auctions", null=True, blank=True)
     winner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="won_auctions")
     end_time = models.DateTimeField(null=True, blank=True)

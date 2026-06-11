@@ -2,114 +2,133 @@
 
 {% block content %}
 <div class="auction-page_container">
-    <div class="auction-page_block">
-        <h2 class="page_item-h2">{{ auction.name }}</h2>
-        <div class="auction-page_description">
-            <p>{{ auction.description }}</p>
-        </div>
-        <div class="auction-page_start-price">Початкова ціна: {{ auction.start_price }}</div>
-
-        {% if auction.image %}
-            <div class="auction-page_img">
-                <img src="{{ auction.image.url }}" alt="{{ auction.name }}" style="max-width:300px;">
-            </div>
-        {% endif %}
-
-        <div class="auction-page_status">
-            {% if auction.active %}
-                <div class="page_status-text">Статус: Активний</div>
-                
-                {% if auction.end_time %}
-                    <div class="auction-timer" style="margin: 10px 0; padding: 10px; background-color: #f8d7da; color: #721c24; border-radius: 5px; font-weight: bold;">
-                        До завершення: <span id="countdown" data-endtime="{{ auction.end_time|date:'c' }}">Завантаження...</span>
-                    </div>
-                {% endif %}
-                {% else %}
-                <div class="page_status-text">Статус: Закритий</div>
-                {% if auction.winner %}
-                    <div class="page_status-winner">Переможець: {{ auction.winner.username }}</div> 
-                {% else %}
-                    <div class="page_status-winner"><br>Переможця немає</div> 
-                {% endif %}
+    <div class="auction-grid">
+        
+        <div class="auction-media-card">
+            {% if auction.image %}
+                <div class="auction-main-image">
+                    <img src="{{ auction.image.url }}" alt="{{ auction.name }}">
+                </div>
+            {% else %}
+                <div class="no-image-placeholder">Немає зображення</div>
             {% endif %}
-        </div>
 
-        <h3>Ставки:</h3>
-        <ul class="auction-page_bids">
-            {% for bid in bids %}
-                <li class="page_bids-item">{{ bid.user.username }} — {{ bid.amount }}</li>
-            {% empty %}
-                <li class="page_bids-item">Ще немає ставок</li>
-            {% endfor %}
-        </ul>
-
-        {% if auction.active %}
-            <form method="post" class="auction-page_form" novalidate>
-                {% csrf_token %}
-                
-                {% if bid_form.amount.errors %}
-                    <div class="form-errors" style="color: #dc3545; font-weight: bold; margin-bottom: 10px; list-style: none;">
-                        {{ bid_form.amount.errors }}
-                    </div>
-                {% endif %}
-
-                {{ bid_form.amount }}
-                <button class="page_form-button" type="submit">Зробити ставку</button>
-            </form>
-
-            {% if user.is_authenticated and user == auction.owner and auction.active %}
-                <form class="auction-page_form" method="post" action="{% url 'close_auction' auction.id %}" novalidate>
-                    {% csrf_token %}
-                    <button class="page_form-button" type="submit">Закрити аукціон</button>
-                </form>
-            {% endif %}
-        {% endif %}
-
-        {% if user.is_authenticated %}
-            <form class="auction-page_form" method="post" action="{% url 'toggle_watchlist' auction.id %}">
-                {% csrf_token %}
-                <button class="page_form-button" type="submit">
-                    {% if in_watchlist %}
-                        Видалити зі списку відстеження
-                    {% else %}
-                        Додати до списку відстеження
+            <div class="auction-status-badge">
+                {% if auction.active %}
+                    <span class="badge status-active">● Активний</span>
+                    {% if auction.end_time %}
+                        <div class="modern-timer">
+                            <small>До завершення:</small>
+                            <span id="countdown" data-endtime="{{ auction.end_time|date:'c' }}">Завантаження...</span>
+                        </div>
                     {% endif %}
-                </button>
-            </form>
-        {% endif %}
-
-        <h3>Коментарі</h3>
-        {% if comments %}
-            <ul class="auction-page_comments">
-                {% for comment in comments %}
-                    <li class="page_comments-item"><b>{{ comment.user.username }}</b>: {{ comment.text }} <i>({{ comment.created_at|date:"d.m.Y H:i" }})</i></li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <div class="auction-page_text">
-                <p>Коментарів поки що немає</p>
+                {% else %}
+                    <span class="badge status-closed">Закритий</span>
+                    {% if auction.winner %}
+                        <div class="winner-alert">
+                            🎉 Переможець: <strong>{{ auction.winner.username }}</strong>
+                        </div> 
+                    {% else %}
+                        <div class="winner-alert neutral">Аукціон завершено без ставок</div> 
+                    {% endif %}
+                {% endif %}
             </div>
+        </div>
+
+        <div class="auction-info-card">
+            <h2 class="auction-main-title">{{ auction.name }}</h2>
+            
+            <div class="auction-extended-description">
+                <p>{{ auction.description }}</p>
+            </div>
+
+            <div class="price-box">
+                <span class="price-label">Початкова ціна</span>
+                <span class="price-amount">{{ auction.start_price }} 🪙</span>
+            </div>
+
+            <div class="bidding-widget">
+                <h3>Історія ставок</h3>
+                <ul class="modern-bids-list">
+                    {% for bid in bids %}
+                        <li class="modern-bid-item">
+                            <span class="bid-user">👤 {{ bid.user.username }}</span>
+                            <span class="bid-amount-val">{{ bid.amount }} 🪙</span>
+                        </li>
+                    {% empty %}
+                        <li class="modern-bid-item empty-bids">Ставок ще немає. Будьте першим!</li>
+                    {% endfor %}
+                </ul>
+
+                {% if auction.active %}
+                    <form method="post" class="modern-action-form" novalidate>
+                        {% csrf_token %}
+                        {% if bid_form.amount.errors %}
+                            <div class="form-field-error">{{ bid_form.amount.errors }}</div>
+                        {% endif %}
+                        <div class="inline-input-group">
+                            {{ bid_form.amount }}
+                            <button class="button-primary" type="submit">Зробити ставку</button>
+                        </div>
+                    </form>
+
+                    {% if user.is_authenticated and user == auction.owner %}
+                        <form method="post" action="{% url 'close_auction' auction.id %}" novalidate style="margin-top: 12px;">
+                            {% csrf_token %}
+                            <button class="button-dark style-danger-btn" type="submit">🛑 Закрити аукціон</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'toggle_watchlist' auction.id %}" style="margin-top: 12px;">
+                        {% csrf_token %}
+                        <button class="button-secondary watchlist-toggle-btn" type="submit">
+                            {% if in_watchlist %}
+                                ⭐ Видалити з відстежуваного
+                            {% else %}
+                                ☆ Додати до відстеження
+                            {% endif %}
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="comments-section-card">
+        <h3>Обговорення лоту</h3>
+        
+        {% if comments %}
+            <div class="modern-comments-stream">
+                {% for comment in comments %}
+                    <div class="comment-bubble">
+                        <div class="comment-meta">
+                            <span class="comment-author">{{ comment.user.username }}</span>
+                            <span class="comment-date">{{ comment.created_at|date:"d.m.Y H:i" }}</span>
+                        </div>
+                        <p class="comment-text-content">{{ comment.text }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-comments-state">Коментарів поки що немає. Залиште перший відгук або запитання!</div>
         {% endif %}
 
         {% if user.is_authenticated %}
-            <form class="auction-page_form" method="post" novalidate>
+            <form method="post" class="modern-comment-form" novalidate>
                 {% csrf_token %}
-                
                 {% if comment_form.text.errors %}
-                    <div class="form-errors" style="color: #dc3545; font-weight: bold; margin-bottom: 10px; list-style: none;">
-                        {{ comment_form.text.errors }}
-                    </div>
+                    <div class="form-field-error">{{ comment_form.text.errors }}</div>
                 {% endif %}
-
-                {{ comment_form.text }}<br>
-                <button class="page_form-button" type="submit">Додати</button>
+                {{ comment_form.text }}
+                <button class="button-primary comment-submit-btn" type="submit">Надіслати коментар</button>
             </form>
         {% else %}
-            <div class="auction-page_text">
-                <p><a href="{% url 'login' %}">Увійдіть</a>, щоб залишити коментар.</p>
+            <div class="login-to-comment-alert">
+                <p><a href="{% url 'login' %}">Увійдіть в акаунт</a>, щоб мати можливість залишати коментарі.</p>
             </div>
         {% endif %}
     </div>
 </div>
-
 {% endblock %}

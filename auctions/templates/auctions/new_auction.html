@@ -10,22 +10,41 @@
             <form method="post" enctype="multipart/form-data" class="new-auction_form">
                 {% csrf_token %}
 
-                <label class="new-auction_label">Назва:</label>
-                {{ form.name }}
+                <div class="form-group">
+                    <label class="new-auction_label">Назва:</label>
+                    {{ form.name }}
+                </div>
 
-                <label class="new-auction_label">Опис:</label>
-                {{ form.description }}
+                <div class="form-group">
+                    <label class="new-auction_label">Опис:</label>
+                    {{ form.description }}
+                </div>
 
-                <label class="new-auction_label">Початкова ставка:</label>
-                {{ form.start_price }}
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label class="new-auction_label">Початкова ставка:</label>
+                        {{ form.start_price }}
+                    </div>
 
-                <label class="new-auction_label">Зображення:</label>
-                {{ form.image }}
+                    <div class="form-group">
+                        <label class="new-auction_label">Категорія:</label>
+                        {{ form.category }}
+                    </div>
+                </div>
 
-                <label for="end_time" class="new-auction_label">Час завершення аукціону:</label>
-                {{ form.end_time }}
+                <div class="form-group">
+                    <label class="new-auction_label">Зображення:</label>
+                    <div class="file-upload-wrapper">
+                        {{ form.image }}
+                    </div>
+                </div>
 
-                <button type="submit" class="new-auction_button">Створити</button>
+                <div class="form-group">
+                    <label for="end_time" class="new-auction_label">Час завершення аукціону:</label>
+                    {{ form.end_time }}
+                </div>
+
+                <button type="submit" class="button-primary btn-submit-auction">Створити аукціон</button>
             </form>
         </div>
     </div>

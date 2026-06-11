@@ -26,8 +26,27 @@ def close_expired_auctions():
 
 def index(request):
     close_expired_auctions()
+    
+    # Отримуємо параметри фільтрації з GET-запиту
+    query = request.GET.get('q', '').strip()
+    category_filter = request.GET.get('category', '').strip()
+    
+    # Базовий QuerySet (беремо всі аукціони)
+    auctions = Auctions.objects.all()
+    
+    # Фільтрація за назвою (без урахування регістру)
+    if query:
+        auctions = auctions.filter(name__icontains=query)
+        
+    # Фільтрація за категорією
+    if category_filter and category_filter != 'all':
+        auctions = auctions.filter(category=category_filter)
+        
     return render(request, "auctions/index.html", {
-        "auctions": Auctions.objects.all()
+        "auctions": auctions,
+        "query": query,
+        "category_filter": category_filter,
+        "categories": Auctions.CATEGORY_CHOICES
     })
 
 
