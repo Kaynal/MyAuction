@@ -5,8 +5,8 @@
         <!-- Header Section -->
         <div class="index-header">
             <div class="index-header-content">
-                <h1 class="index-title">Auction Dashboard</h1>
-                <p class="index-subtitle">Manage and discover premium on-going auctions.</p>
+                <h1 class="index-title">Панель аукціонів</h1>
+                <p class="index-subtitle">Керуйте власними лотами та знаходьте цікаві пропозиції в реальному часі.</p>
             </div>
             {% if user.is_authenticated %}
             <div class="index-header-actions">
@@ -17,17 +17,12 @@
 
         <!-- Featured Auction Section -->
         <div class="featured-section">
-            <div class="featured-badge">Featured Auction</div>
             <div class="featured-content">
                 <div class="featured-text">
-                    <h2 class="featured-title">Accelerate, Elevate, <span>and Innovate.</span></h2>
-                    <p class="featured-description">Join the world's most exclusive bidding platform. From vintage classics to cutting-edge technology, your next masterpiece is one bid away.</p>
+                    <h2 class="featured-title">Роби ставки, перемагай <span>та забирай найкраще.</span></h2>
+                    <p class="featured-description">Приєднуйтесь до сучасної платформи онлайн-торгів. Від вінтажної класики до передових технологій — ваш наступний успішний лот на відстані однієї ставки.</p>
                     <div class="featured-actions">
-                        <a href="#auctions" class="button-featured">Check Auctions</a>
-                        <div class="verified-badge">
-                            <span class="verified-dot">●</span>
-                            Verified Assets Only
-                        </div>
+                        <a href="#auctions" class="button-featured">Переглянути аукціони</a>
                     </div>
 
                     <form method="GET" action="{% url 'index' %}" class="minimal-search-form">
@@ -36,13 +31,13 @@
                         </div>
                         
                         <select name="category" class="category-dropdown" onchange="this.form.submit()">
-                            <option value="all">All Categories</option>
+                            <option value="all">Усі категорії</option>
                             {% for code, name in categories %}
                                 <option value="{{ code }}" {% if category_filter == code %}selected{% endif %}>{{ name }}</option>
                             {% endfor %}
                         </select>
 
-                        <button type="submit" class="search-submit-btn">Search</button>
+                        <button type="submit" class="search-submit-btn">Пошук</button>
                     </form>
                 </div>
                 {% load static %}
@@ -60,8 +55,8 @@
         <!-- Trending Auctions Section -->
         <div class="trending-section">
             <div class="trending-header">
-                <h3 class="trending-title">Trending Auctions</h3>
-                <a href="#" class="view-all-link">View All Live Listings</a>
+                <h3 class="trending-title">Популярні аукціони</h3>
+                <a href="#" class="view-all-link">Переглянути всі живі лоти</a>
             </div>
 
             <div class="auctions-list-container">
@@ -78,7 +73,6 @@
                     <div class="auction-item-body">
                         <div class="auction-item-header">
                             <span class="category-badge">{{ auction.get_category_display }}</span>
-                            <span class="hot-interest">🔥 Hot Interest</span>
                         </div>
 
                         <h4 class="auction-item-title">{{ auction.name }}</h4>
@@ -86,11 +80,11 @@
                         <div class="auction-item-footer">
                             <div class="auction-item-stats">
                                 <div class="stat-item">
-                                    <div class="stat-label">CURRENT BID</div>
+                                    <div class="stat-label">ПОТОЧНА СТАВКА</div>
                                     <div class="stat-value">₴{{ auction.current_price }}</div>
                                 </div>
                                 <div class="stat-item">
-                                    <div class="stat-label">ENDING IN</div>
+                                    <div class="stat-label">ЗАКІНЧУЄТЬСЯ ЧЕРЕЗ</div>
                                     <div class="stat-value">
                                         {% if auction.active %}
                                             {% if auction.end_time %}
@@ -104,13 +98,13 @@
                                     </div>
                                 </div>
                                 <div class="stat-item">
-                                    <div class="stat-label">TOTAL BIDS</div>
-                                    <div class="stat-value">{{ auction.bids.count }} Active Bids</div>
+                                    <div class="stat-label">ЗАГАЛЬНА КІЛЬКІСТЬ СТАВОК</div>
+                                    <div class="stat-value">{{ auction.bids.count }} Активних ставок</div>
                                 </div>
                             </div>
 
                             {% if user.is_authenticated %}
-                                <a href="{% url 'auction' auction.id %}" class="button-view-details">Переглянути</a>
+                                <a href="{% url 'auction' auction.id %}" class="button-view-details view-details">Переглянути</a>
                             {% else %}
                                 <a href="{% url 'login' %}?next={% url 'auction' auction.id %}" class="button-view-details">Зареєструватися для перегляду</a>
                             {% endif %}

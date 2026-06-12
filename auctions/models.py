@@ -14,11 +14,11 @@ class User(AbstractUser):
 
 class Auctions(models.Model):
     CATEGORY_CHOICES = [
-        ('tech', 'Technology'),
-        ('art', 'Fine Art'),
-        ('fashion', 'Fashion'),
-        ('home', 'Home & Garden'),
-        ('other', 'Other'),
+        ('tech', 'Техніка та електроніка'),
+        ('art', 'Мистецтво та антикваріат'),
+        ('fashion', 'Одяг та стиль'),
+        ('home', 'Дім та сад'),
+        ('other', 'Інше'),
     ]
     name = models.CharField(max_length=64)
     description = models.TextField()

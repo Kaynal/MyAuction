@@ -60,6 +60,7 @@ h1,h2,h3,h4,h5,h6{
     background: rgba(70, 25, 25, 1);
     display: flex;
     justify-content: center;
+    padding: 0 .875rem;
 }
 h1 {
     color: rgba(255, 255, 255, 1);
@@ -154,19 +155,6 @@ h1 {
     box-shadow: 0 10px 40px rgba(213, 72, 44, 0.03);
 }
 
-.featured-badge {
-    display: inline-block;
-    background: #fdf2f0;
-    color: #d5482c;
-    padding: 6px 14px;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    margin-bottom: 24px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
 .featured-content {
     display: grid;
     /* Збільшили колонку для картинки, щоб вона виглядала масштабно */
@@ -228,7 +216,7 @@ h1 {
 
 .button-featured:hover {
     background: #b83a20;
-    color: #ffffff;
+    color: #ffffff !important;
     transform: translateY(-1px);
 }
 
@@ -479,13 +467,6 @@ h1 {
     border-radius: 8px;
     font-size: 0.75rem;
     font-weight: 700;
-}
-
-.hot-interest {
-    color: #ef4444;
-    font-size: 0.85rem;
-    font-weight: 600;
-    white-space: nowrap;
 }
 
 .auction-item-title {
@@ -1649,14 +1630,6 @@ h1 {
     font-size: 0.85rem;
 }
 
-.bid-status {
-    margin-left: auto;
-    color: #10b981;
-    font-weight: 700;
-    font-size: 0.95rem;
-    white-space: nowrap;
-}
-
 .activity-icon {
     margin-top: 2px;
     font-size: 0.8rem;
@@ -1813,8 +1786,15 @@ h1 {
 .button-primary {
     transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out !important;
 }
+.button-primary:hover{
+    color: #fff !important;
+}
 a:hover {
-    color: #ffffff !important;
+    color: inherit !important;
     text-decoration: none !important;
     text-decoration: underline !important;
+}
+
+.view-details:hover {
+    color: #fff !important;
 }

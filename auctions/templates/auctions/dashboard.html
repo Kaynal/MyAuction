@@ -12,7 +12,7 @@
             <div class="sidebar-profile-info">
                 <h2>{{ user.get_full_name|default:user.username }}</h2>
                 <p>{{ user.email }}</p>
-                <span>Member since {{ user.date_joined|date:"F Y" }}</span>
+                <span>Учасник з {{ user.date_joined|date:"F Y" }}</span>
             </div>
         </div>
 
@@ -21,7 +21,7 @@
             <strong>{{ user.profile.credits|default:"0.00" }} ₴</strong>
         </div>
 
-        <a class="sidebar-logout" href="{% url 'logout' %}">Log Out</a>
+        <a class="sidebar-logout" href="{% url 'logout' %}">Вийти</a>
     </aside>
 
     <main class="dashboard-main">
@@ -34,19 +34,19 @@
 
         <div class="stats-cards">
             <article class="stats-card">
-                <span class="stats-card-label">Total Auctions</span>
+                <span class="stats-card-label">ЗАГАЛЬНА КІЛЬКІСТЬ АУКЦІОНОВ</span>
                 <strong>{{ total_auctions }}</strong>
             </article>
             <article class="stats-card">
-                <span class="stats-card-label">Active Auctions</span>
+                <span class="stats-card-label">АКТИВНІ АУКЦІОНИ</span>
                 <strong>{{ active_auctions }}</strong>
             </article>
             <article class="stats-card">
-                <span class="stats-card-label">Won Auctions</span>
+                <span class="stats-card-label">ВИГРАНІ АУКЦІОНИ</span>
                 <strong>{{ won_auctions_count }}</strong>
             </article>
             <article class="stats-card">
-                <span class="stats-card-label">Comments</span>
+                <span class="stats-card-label">КОМЕНТАРІ</span>
                 <strong>{{ comments_count }}</strong>
             </article>
         </div>
@@ -56,12 +56,12 @@
                 <div class="panel-card panel-auctions">
                     <div class="panel-header">
                         <div>
-                            <h2>My Auctions</h2>
-                            <p class="panel-subtitle" id="auctions-subtitle">Active auctions that you created</p>
+                            <h2>Мої аукціони</h2>
+                            <p class="panel-subtitle" id="auctions-subtitle">Активні аукціони, які ви створили</p>
                         </div>
                         <div class="panel-tabs">
-                            <button class="tab active" id="tab-active" type="button" onclick="switchAuctionsTab('active')">Active</button>
-                            <button class="tab" id="tab-completed" type="button" onclick="switchAuctionsTab('completed')">Completed</button>
+                            <button class="tab active" id="tab-active" type="button" onclick="switchAuctionsTab('active')">Активні</button>
+                            <button class="tab" id="tab-completed" type="button" onclick="switchAuctionsTab('completed')">Завершені</button>
                         </div>
                     </div>
 
@@ -75,27 +75,27 @@
                             </div>
                             <div class="auction-card-body">
                                 <h3>{{ auction.name }}</h3>
-                                <p class="auction-meta">Current: {{ auction.current_price }} · {{ auction.bids.count }} bids</p>
+                                <p class="auction-meta">Поточна: {{ auction.current_price }} · {{ auction.bids.count }} ставок</p>
                                 <div class="auction-status {% if auction.active %}status-active{% else %}status-closed{% endif %}">
-                                    {% if auction.active %}Active{% else %}Closed{% endif %}
+                                    {% if auction.active %}Активний{% else %}Завершений{% endif %}
                                 </div>
                             </div>
-                            <a class="auction-card-action" href="{% url 'auction' auction.id %}">View</a>
+                            <a class="auction-card-action" href="{% url 'auction' auction.id %}">Переглянути</a>
                         </article>
                         {% empty %}
-                        <div class="empty-state">You don't have auctions yet.</div>
+                        <div class="empty-state">У вас немає аукціонів</div>
                         {% endfor %}
                         
-                        <div class="empty-state" id="tab-empty-state" style="display: none;">No auctions found in this category.</div>
+                        <div class="empty-state" id="tab-empty-state" style="display: none;">Немає аукціонів у цій категорії</div>
                     </div>
                 </div>
 
                 <div class="panel-card panel-favorites">
                     <div class="panel-header">
                         <div>
-                            <h2>Favorites / Wishlist</h2>
+                            <h2>Список відстеження</h2>
                         </div>
-                        <a href="{% url 'watchlist' %}" class="panel-link">View all</a>
+                        <a href="{% url 'watchlist' %}" class="panel-link">Переглянути всі</a>
                     </div>
                     <div class="favorites-grid">
                         {% for auction in favorites %}
@@ -108,22 +108,22 @@
                             <div class="favorite-card-body">
                                 <h3>{{ auction.name }}</h3>
                                 <p>{{ auction.current_price }}</p>
-                                <a class="button-secondary" href="{% url 'auction' auction.id %}">Place Bid</a>
+                                <a class="button-secondary" href="{% url 'auction' auction.id %}">Зробити ставку</a>
                             </div>
                         </article>
                         {% empty %}
-                        <div class="empty-state">No favorite auctions.</div>
+                        <div class="empty-state">У вас немає улюблених аукціонів.</div>
                         {% endfor %}
                     </div>
                 </div>
 
                 <div class="panel-card panel-settings">
                     <div class="panel-header">
-                        <h2>Profile Settings</h2>
+                        <h2>Налаштування профілю</h2>
                     </div>
                     <div class="settings-grid">
                         <div class="settings-panel">
-                            <h3>Edit Profile</h3>
+                            <h3>Редагувати профіль</h3>
                             <form method="POST">
                                 {% csrf_token %}
                                 <div class="form-group">
@@ -134,11 +134,11 @@
                                     <label>Email Address</label>
                                     {{ user_form.email }}
                                 </div>
-                                <button type="submit" name="update_profile" class="button-primary">Save Changes</button>
+                                <button type="submit" name="update_profile" class="button-primary">Зберегти зміни</button>
                             </form>
                         </div>
                         <div class="settings-group">
-                            <h3>Change Password</h3>
+                            <h3>Змінити пароль</h3>
                             <form method="POST" action="{% url 'dashboard' %}">
                                 {% csrf_token %}
                                 
@@ -164,7 +164,7 @@
                                     {% endfor %}
                                 </div>
                                 
-                                <button class="button-primary" type="submit" name="change_password">Update Password</button>
+                                <button class="button-primary" type="submit" name="change_password">Оновити пароль</button>
                             </form>
                         </div>
                     </div>
@@ -175,29 +175,28 @@
                 <div class="panel-card panel-bids">
                     <div class="panel-header">
                         <div>
-                            <h2>My Bids</h2>
-                            <p class="panel-subtitle">Recent bid activity</p>
+                            <h2>Мої ставки</h2>
+                            <p class="panel-subtitle">Остання активність ставок</p>
                         </div>
-                        <a href="{% url 'watchlist' %}" class="panel-link">View all</a>
+                        <a href="{% url 'watchlist' %}" class="panel-link">Переглянути всі</a>
                     </div>
                     <div class="bid-list">
                         {% for bid in my_bids %}
                         <article class="bid-item">
                             <div>
                                 <h4>{{ bid.auction.name }}</h4>
-                                <p>Your bid: {{ bid.amount }}</p>
+                                <p>Ваша ставка: {{ bid.amount }}</p>
                             </div>
-                            <span class="bid-status">Leading</span>
                         </article>
                         {% empty %}
-                        <div class="empty-state">No bids yet.</div>
+                        <div class="empty-state">Поки що у вас немає ставок.</div>
                         {% endfor %}
                     </div>
                 </div>
 
                 <div class="panel-card panel-activity">
                     <div class="panel-header">
-                        <h2>Activity History</h2>
+                        <h2>Історія активності</h2>
                     </div>
                     <div class="activity-list">
                         {% if my_bids %}
@@ -205,13 +204,13 @@
                             <article class="activity-item">
                                 <span class="activity-icon">●</span>
                                 <div>
-                                    <p>Placed bid {{ bid.amount }} on {{ bid.auction.name }}</p>
+                                    <p>Ставка {{ bid.amount }} на {{ bid.auction.name }}</p>
                                     <small>{{ bid.created_at|date:"M d, Y" }}</small>
                                 </div>
                             </article>
                             {% endfor %}
                         {% else %}
-                        <div class="empty-state">No recent activity.</div>
+                        <div class="empty-state">Немає останньої активності.</div>
                         {% endif %}
                     </div>
                 </div>

@@ -280,11 +280,14 @@ def dashboard(request):
             else:
                 messages.error(request, "Пожалуйста, исправьте ошибки в форме пароля.")
 
-    # Собираем данные для вывода (ваша текущая логика)
     my_auctions = Auctions.objects.filter(owner=request.user)
     my_bids = Bid.objects.filter(user=request.user).select_related("auction").order_by("-created_at")[:5]
     favorites = Auctions.objects.filter(watchlisted_by__user=request.user)[:6]
     won_auctions = Auctions.objects.filter(winner=request.user)
+    total_auctions = my_auctions.count()
+    active_auctions = my_auctions.filter(active=True).count()
+    won_auctions_count = won_auctions.count()
+    comments_count = Comments.objects.filter(user=request.user).count()
     
     context = {
         "user_form": user_form,
@@ -294,5 +297,9 @@ def dashboard(request):
         "favorites": favorites,
         "won_auctions": won_auctions,
         "total_auctions": my_auctions.count(),
+        "total_auctions": total_auctions,
+        "active_auctions": active_auctions,
+        "won_auctions_count": won_auctions_count,
+        "comments_count": comments_count,
     }
     return render(request, "auctions/dashboard.html", context)
