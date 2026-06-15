@@ -11,7 +11,20 @@
 <body>
 
     <div class="wrapper">
-         {% include "auctions/header.html" %}
+        {% include "auctions/header.html" %}
+
+        {% if messages %}
+             <div class="container mt-3">
+                 {% for message in messages %}
+                     <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                         {{ message }}
+                         <button type="button" class="close d-flex align-items-center" data-dismiss="alert" aria-label="Close" style="margin-top: -4px;">
+                             <span aria-hidden="true">&times;</span>
+                         </button>
+                     </div>
+                 {% endfor %}
+             </div>
+         {% endif %}
 
         <main class="page">
             {% block content %}
