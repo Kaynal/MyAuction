@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // Находим все элементы таймеров (и на детальной странице, и в списках карточек)
     const countdownElements = document.querySelectorAll(".card-countdown, #countdown");
     if (countdownElements.length === 0) return;
 
@@ -13,10 +12,9 @@ document.addEventListener("DOMContentLoaded", function() {
             const endTime = new Date(endTimeStr).getTime();
             const distance = endTime - now;
 
-            // Если время истекло
             if (distance < 0) {
                 if (el.id === "countdown") {
-                    el.innerHTML = "ЧАС ИСТЁК!";
+                    el.innerHTML = "ЧАС МИНУВ!";
                     if (!el.dataset.reloaded) {
                         el.dataset.reloaded = "true";
                         setTimeout(() => { location.reload(); }, 1000);

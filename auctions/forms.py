@@ -3,24 +3,20 @@ from django.core.exceptions import ValidationError
 from .models import Auctions, Bid, Comments, User
 
 class AuctionForm(forms.ModelForm):
-    """ Форма для створення нового аукціонного лоту """
     class Meta:
         model = Auctions
-        # Добавили 'category' в список полей
         fields = ['name', 'description', 'start_price', 'image', 'category', 'end_time']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'new-auction_input'}),
             'description': forms.Textarea(attrs={'class': 'new-auction_textarea', 'rows': 8}),
             'start_price': forms.NumberInput(attrs={'class': 'new-auction_input', 'step': '0.01', 'min': '0'}),
             'image': forms.FileInput(attrs={'class': 'new-auction_file'}),
-            # Добавили виджет для категории с вашим CSS-классом для инпутов
             'category': forms.Select(attrs={'class': 'new-auction_input'}),
             'end_time': forms.DateTimeInput(attrs={'class': 'new-auction_input', 'type': 'datetime-local'}),
         }
 
 
 class BidForm(forms.ModelForm):
-    """ Форма для розміщення ставок із розширеною валідацією """
     class Meta:
         model = Bid
         fields = ['amount']
@@ -29,22 +25,18 @@ class BidForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        # Отримуємо об'єкт аукціону, який передається з view
         self.auction = kwargs.pop('auction', None)
         super().__init__(*args, **kwargs)
 
-    # РОЗШИРЕНА ВАЛІДАЦІЯ КОНКРЕТНОГО ПОЛЯ
     def clean_amount(self):
         amount = self.cleaned_data.get('amount')
 
         if amount is None:
             raise ValidationError("Некоректна сума ставки.")
 
-        # 1. Перевірка: ставка не повинна бути меншою за початкову ціну лоту
         if amount < self.auction.start_price:
             raise ValidationError("Ставка має бути не меншою за початкову ціну.")
 
-        # 2. Перевірка: ставка повинна бути строго більшою за поточну найвищу ставку
         highest_bid = self.auction.bids.order_by("-amount").first()
         if highest_bid and amount <= highest_bid.amount:
             raise ValidationError(f"Ставка має бути більшою за поточную найвищу (${highest_bid.amount}).")

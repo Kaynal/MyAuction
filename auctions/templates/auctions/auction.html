@@ -1,6 +1,18 @@
 ﻿{% extends "auctions/layout.html" %}
 
 {% block content %}
+{% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close d-flex align-items-center" data-dismiss="alert" aria-label="Close" style="height: 100%;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
 <div class="auction-page_container">
     <div class="auction-grid">
         

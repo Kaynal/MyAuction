@@ -1,4 +1,6 @@
 # auctions/views.py
+from urllib import request
+
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.db import IntegrityError
@@ -16,32 +18,32 @@ from django.db import transaction
 
 
 def close_expired_auctions():
-    """ Допоміжна функція для автоматичного закриття просрочених лотів """
     now = timezone.now()
     expired_auctions = Auctions.objects.filter(active=True, end_time__isnull=False, end_time__lte=now)
     for auction in expired_auctions:
         highest_bid = auction.bids.order_by("-amount").first()
         if highest_bid:
             auction.winner = highest_bid.user
+            
+            if request and request.user.is_authenticated and auction.winner == request.user:
+                messages.success(
+                    request, 
+                    f"Вітаємо! Ви щойно виграли аукціон '{auction.name}' зі ставкою ₴{highest_bid.amount}!"
+                )
         auction.active = False
         auction.save()
 
 
 def index(request):
     close_expired_auctions()
-    
-    # Отримуємо параметри фільтрації з GET-запиту
+  
     query = request.GET.get('q', '').strip()
     category_filter = request.GET.get('category', '').strip()
-    
-    # Базовий QuerySet (беремо всі аукціони)
     auctions = Auctions.objects.all()
-    
-    # Фільтрація за назвою (без урахування регістру)
+
     if query:
         auctions = auctions.filter(name__icontains=query)
-        
-    # Фільтрація за категорією
+
     if category_filter and category_filter != 'all':
         auctions = auctions.filter(category=category_filter)
         
@@ -150,6 +152,11 @@ def auction(request, auction_id):
 
         elif "amount" in request.POST:  # Відправлено форму ставки (поле моделі 'amount')
             bid_form = BidForm(request.POST, auction=auction)
+            
+            if request.user == auction.owner:
+                messages.error(request, "Ви не можете робити ставки на власний аукціон!")
+                return redirect("auction", auction_id=auction.id)
+            
             if bid_form.is_valid():
                 # Оборачиваем все финансовые операции в атомарную транзакцию
                 with transaction.atomic():
