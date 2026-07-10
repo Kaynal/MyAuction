@@ -1,6 +1,4 @@
 # auctions/views.py
-from urllib import request
-
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.db import IntegrityError
@@ -13,11 +11,10 @@ from django.utils import timezone
 from .models import User, Auctions, Bid, Comments, Watchlist
 from .forms import AuctionForm, BidForm, CommentForm, UserUpdateForm
 from django.contrib import messages
-from django.shortcuts import redirect, render
 from django.db import transaction
 
 
-def close_expired_auctions():
+def close_expired_auctions(request=None):
     now = timezone.now()
     expired_auctions = Auctions.objects.filter(active=True, end_time__isnull=False, end_time__lte=now)
     for auction in expired_auctions:
@@ -35,11 +32,11 @@ def close_expired_auctions():
 
 
 def index(request):
-    close_expired_auctions()
+    close_expired_auctions(request) 
   
     query = request.GET.get('q', '').strip()
     category_filter = request.GET.get('category', '').strip()
-    auctions = Auctions.objects.all()
+    auctions = Auctions.objects.filter(active=True).order_by('-id')
 
     if query:
         auctions = auctions.filter(name__icontains=query)
@@ -105,13 +102,11 @@ def register(request):
 @login_required
 def new_auction(request):
     if request.method == "POST":
-        # Передаємо в форму сирі дані та файли
         form = AuctionForm(request.POST, request.FILES)
         if form.is_valid():
-            # commit=False створює об'єкт моделі, але не зберігає його в БД одразу
             auction = form.save(commit=False)
-            auction.owner = request.user  # Додаємо власника лоту вручну
-            auction.save()                # Тепер зберігаємо в базу даних
+            auction.owner = request.user
+            auction.save()
             messages.success(request, "Аукціон успішно створено!")
             return redirect("index")
     else:
@@ -122,7 +117,7 @@ def new_auction(request):
 
 @login_required
 def auction(request, auction_id):
-    close_expired_auctions()
+    close_expired_auctions(request)
     
     auction = get_object_or_404(Auctions, pk=auction_id)
     bids = auction.bids.all().order_by("-amount")
@@ -130,13 +125,11 @@ def auction(request, auction_id):
     comments = auction.comments.all().order_by("-created_at")
     in_watchlist = Watchlist.objects.filter(user=request.user, auction=auction).exists() if request.user.is_authenticated else False
 
-    # Створюємо порожні форми для відображення на сторінці (GET-запит)
     bid_form = BidForm(auction=auction)
     comment_form = CommentForm()
 
     if request.method == "POST":
-        # Перевіряємо, яка саме з двох форм на сторінці була відправлена
-        if "text" in request.POST:  # Відправлено форму коментаря (поле моделі 'text')
+        if "text" in request.POST:
             comment_form = CommentForm(request.POST)
             if comment_form.is_valid():
                 comment = comment_form.save(commit=False)
@@ -146,11 +139,10 @@ def auction(request, auction_id):
                 messages.success(request, "Коментар додано!")
                 return redirect("auction", auction_id=auction.id)
             else:
-                # Якщо валідація форми не пройшла, збираємо помилки
                 for error in comment_form.errors.values():
                     messages.error(request, error.as_text())
 
-        elif "amount" in request.POST:  # Відправлено форму ставки (поле моделі 'amount')
+        elif "amount" in request.POST:
             bid_form = BidForm(request.POST, auction=auction)
             
             if request.user == auction.owner:
@@ -158,42 +150,34 @@ def auction(request, auction_id):
                 return redirect("auction", auction_id=auction.id)
             
             if bid_form.is_valid():
-                # Оборачиваем все финансовые операции в атомарную транзакцию
                 with transaction.atomic():
+                    auction = Auctions.objects.select_for_update().get(id=auction.id)
                     bid = bid_form.save(commit=False)
                     bid.auction = auction
                     bid.user = request.user
+                    user_profile = request.user.profile.__class__.objects.select_for_update().get(user=request.user)
                     
-                    # 1. Проверяем, хватает ли кредитов у текущего пользователя
-                    user_profile = request.user.profile
                     if user_profile.credits < bid.amount:
                         messages.error(request, "На вашому балансі недостатньо кредитів для цієї ставки.")
                         return redirect("auction", auction_id=auction.id)
                     
-                    # 2. Логика возврата кредитов предыдущему участнику
-                    previous_highest_bid = auction.bids.order_by("-amount").first()
+                    previous_highest_bid = auction.bids.select_for_update().order_by("-amount").first()
                     if previous_highest_bid:
                         if previous_highest_bid.user == request.user:
-                            # Если пользователь перебивает свою же ставку, 
-                            # возвращаем её сумму обратно на счет перед списанием новой
                             user_profile.credits += previous_highest_bid.amount
                         else:
-                            # Если перебивают другого пользователя — возвращаем кредиты на его кошелек
-                            prev_user_profile = previous_highest_bid.user.profile
+                            prev_user_profile = previous_highest_bid.user.profile.__class__.objects.select_for_update().get(user=previous_highest_bid.user)
                             prev_user_profile.credits += previous_highest_bid.amount
                             prev_user_profile.save()
 
-                    # 3. Списываем кредиты за новую ставку у текущего пользователя
                     user_profile.credits -= bid.amount
                     user_profile.save()
 
-                    # 4. Сохраняем ставку в базу данных
                     bid.save()
                     messages.success(request, "Ставка успішно розміщена!")
                     
                 return redirect("auction", auction_id=auction.id)
             else:
-                # Перехоплюємо помилки розширеної валідації з clean_amount()
                 for field, errors in bid_form.errors.items():
                     for error in errors:
                         messages.error(request, error)
@@ -251,7 +235,7 @@ def toggle_watchlist(request, auction_id):
 
 @login_required
 def watchlist(request):
-    close_expired_auctions()
+    close_expired_auctions(request)
     auctions = Auctions.objects.filter(watchlisted_by__user=request.user)
     return render(request, "auctions/watchlist.html", {
         "auctions": auctions
@@ -260,9 +244,18 @@ def watchlist(request):
 
 @login_required
 def dashboard(request):
-    close_expired_auctions()
+    close_expired_auctions(request)
     
-    # Инициализируем обе формы
+    won_auctions_unnotified = Auctions.objects.filter(winner=request.user, active=False)
+    if won_auctions_unnotified.exists():
+        for act in won_auctions_unnotified:
+            h_bid = act.bids.order_by("-amount").first()
+            amt = h_bid.amount if h_bid else "0.00"
+            messages.success(
+                request, 
+                f"Вітаємо! Ви виграли аукціон '{act.name}' зі ставкою ₴{amt}!"
+            )
+    
     user_form = UserUpdateForm(instance=request.user)
     password_form = PasswordChangeForm(user=request.user)
     for field in password_form.fields.values():
@@ -280,7 +273,6 @@ def dashboard(request):
             password_form = PasswordChangeForm(user=request.user, data=request.POST)
             if password_form.is_valid():
                 user = password_form.save()
-                # Важно обновить сессию, чтобы пользователя не выкинуло из системы после смены пароля
                 update_session_auth_hash(request, user)
                 messages.success(request, "Пароль успешно изменен!")
                 return redirect('dashboard')
@@ -303,7 +295,6 @@ def dashboard(request):
         "my_bids": my_bids,
         "favorites": favorites,
         "won_auctions": won_auctions,
-        "total_auctions": my_auctions.count(),
         "total_auctions": total_auctions,
         "active_auctions": active_auctions,
         "won_auctions_count": won_auctions_count,

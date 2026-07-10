@@ -66,21 +66,21 @@ class AuctionArchitectureTestCase(TestCase):
         """ Тест: Аукцион с истекшим временем должен автоматически закрываться, 
         а победителем должен становиться пользователь с максимальной ставкой """
         
-        # Импортируем функцию закрытия прямо внутри теста
+        # Импортируем функцию закрытия
         from .views import close_expired_auctions
 
         # 1. Делаем две разные ставки от разных пользователей
         Bid.objects.create(auction=self.auction, user=self.bidder1, amount=120.00)
-        Bid.objects.create(auction=self.auction, user=self.bidder2, amount=150.00) # Это максимальная ставка
+        Bid.objects.create(auction=self.auction, user=self.bidder2, amount=150.00)
 
-        # 2. Искусственно переносим время завершения аукциона в прошлое (как будто время истекло)
+        # 2. Искусственно переносим время
         self.auction.end_time = timezone.now() - timedelta(hours=2)
         self.auction.save()
 
         # 3. Вызываем функцию проверки и закрытия просроченных аукционов
         close_expired_auctions()
 
-        # 4. Перезагружаем объект аукциона из базы данных, чтобы увидеть изменения
+        # 4. Перезагружаем объект аукциона из базы данных
         self.auction.refresh_from_db()
 
         # 5. Проверяем утверждения (Asserts)
