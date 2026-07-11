@@ -16,19 +16,28 @@ from django.db import transaction
 
 def close_expired_auctions(request=None):
     now = timezone.now()
-    expired_auctions = Auctions.objects.filter(active=True, end_time__isnull=False, end_time__lte=now)
-    for auction in expired_auctions:
-        highest_bid = auction.bids.order_by("-amount").first()
-        if highest_bid:
-            auction.winner = highest_bid.user
-            
-            if request and request.user.is_authenticated and auction.winner == request.user:
-                messages.success(
-                    request, 
-                    f"Вітаємо! Ви щойно виграли аукціон '{auction.name}' зі ставкою ₴{highest_bid.amount}!"
-                )
-        auction.active = False
-        auction.save()
+    with transaction.atomic():
+        expired_auctions = Auctions.objects.select_for_update().filter(
+            active=True, end_time__isnull=False, end_time__lte=now
+        )
+        for auction in expired_auctions:
+            highest_bid = auction.bids.order_by("-amount").first()
+            if highest_bid:
+                auction.winner = highest_bid.user
+                
+                # НАРАХУВАННЯ КОШТІВ ВЛАСНИКУ АУКЦІОНУ
+                if auction.owner and hasattr(auction.owner, 'profile'):
+                    owner_profile = auction.owner.profile.__class__.objects.select_for_update().get(user=auction.owner)
+                    owner_profile.credits += highest_bid.amount
+                    owner_profile.save()
+                
+                if request and request.user.is_authenticated and auction.winner == request.user:
+                    messages.success(
+                        request, 
+                        f"Вітаємо! Ви щойно виграли аукціон '{auction.name}' зі ставкою ₴{highest_bid.amount}!"
+                    )
+            auction.active = False
+            auction.save()
 
 
 def index(request):
@@ -205,16 +214,25 @@ def close_auction(request, auction_id):
         messages.info(request, "Аукціон вже закритий.")
         return redirect("auction", auction_id=auction.id)
 
-    highest_bid = auction.bids.order_by("-amount").first()
+    with transaction.atomic():
+        auction = Auctions.objects.select_for_update().get(id=auction.id)
+        highest_bid = auction.bids.order_by("-amount").first()
 
-    if highest_bid:
-        auction.winner = highest_bid.user
-        messages.success(request, f"Аукціон закрито! Переможець: {highest_bid.user.username} з ставкою {highest_bid.amount}.")
-    else:
-        messages.info(request, "Аукціон закрито без переможця (не було ставок).")
+        if highest_bid:
+            auction.winner = highest_bid.user
+            
+            # НАРАХУВАННЯ КОШТІВ ВЛАСНИКУ ПРИ РУЧНОМУ ЗАКРИТТІ
+            if auction.owner and hasattr(auction.owner, 'profile'):
+                owner_profile = auction.owner.profile.__class__.objects.select_for_update().get(user=auction.owner)
+                owner_profile.credits += highest_bid.amount
+                owner_profile.save()
+                
+            messages.success(request, f"Аукціон закрито! Переможець: {highest_bid.user.username} з ставкою {highest_bid.amount}.")
+        else:
+            messages.info(request, "Аукціон закрито без переможця (не було ставок).")
 
-    auction.active = False
-    auction.save()
+        auction.active = False
+        auction.save()
 
     return redirect("auction", auction_id=auction.id)
 
